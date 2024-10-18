@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.response;
+package fpt.swp.workspace.response;
 
-import fpt.swp.WorkSpace.models.BookingStatus;
+import fpt.swp.workspace.models.BookingStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.response;
+package fpt.swp.workspace.response;
 
 import lombok.Data;
 

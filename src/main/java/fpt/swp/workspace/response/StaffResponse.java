@@ -1,13 +1,11 @@
-package fpt.swp.WorkSpace.response;
+package fpt.swp.workspace.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import fpt.swp.WorkSpace.models.StaffStatus;
+import fpt.swp.workspace.models.StaffStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 
 @Data

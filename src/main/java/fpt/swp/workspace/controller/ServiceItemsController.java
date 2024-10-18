@@ -1,8 +1,7 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.repository.ServiceItemsRepository;
-import fpt.swp.WorkSpace.response.ResponseHandler;
-import fpt.swp.WorkSpace.service.IServiceItemService;
+import fpt.swp.workspace.response.ResponseHandler;
+import fpt.swp.workspace.service.IServiceItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,13 +1,12 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import fpt.swp.WorkSpace.DTO.RoomDTO;
-import fpt.swp.WorkSpace.auth.AuthenticationResponse;
-import fpt.swp.WorkSpace.models.Staff;
-import fpt.swp.WorkSpace.response.*;
-import fpt.swp.WorkSpace.service.RoomService;
-import fpt.swp.WorkSpace.service.StaffService;
-import jakarta.persistence.EntityNotFoundException;
+import fpt.swp.workspace.DTO.RoomDTO;
+import fpt.swp.workspace.auth.AuthenticationResponse;
+import fpt.swp.workspace.models.Staff;
+import fpt.swp.workspace.response.*;
+import fpt.swp.workspace.service.RoomService;
+import fpt.swp.workspace.service.StaffService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

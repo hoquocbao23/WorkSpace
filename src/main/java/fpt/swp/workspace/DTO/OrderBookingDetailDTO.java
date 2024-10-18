@@ -1,7 +1,7 @@
-package fpt.swp.WorkSpace.DTO;
+package fpt.swp.workspace.DTO;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fpt.swp.WorkSpace.models.*;
+import fpt.swp.workspace.models.*;
 import lombok.Data;
 
 

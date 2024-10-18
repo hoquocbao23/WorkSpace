@@ -1,9 +1,8 @@
-package fpt.swp.WorkSpace.models;
+package fpt.swp.workspace.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Entity

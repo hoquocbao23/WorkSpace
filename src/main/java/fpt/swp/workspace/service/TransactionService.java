@@ -1,8 +1,8 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.Transaction;
-import fpt.swp.WorkSpace.repository.TransactionRepository;
-import fpt.swp.WorkSpace.response.TransactionResponse;
+import fpt.swp.workspace.models.Transaction;
+import fpt.swp.workspace.repository.TransactionRepository;
+import fpt.swp.workspace.response.TransactionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

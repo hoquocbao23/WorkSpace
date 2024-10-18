@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.DTO;
+package fpt.swp.workspace.DTO;
 
-import fpt.swp.WorkSpace.models.Room;
+import fpt.swp.workspace.models.Room;
 import lombok.Data;
 
 import java.util.List;

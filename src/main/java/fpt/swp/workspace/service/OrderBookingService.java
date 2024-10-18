@@ -1,12 +1,12 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.DTO.BookedSlotDTO;
-import fpt.swp.WorkSpace.DTO.CustomerServiceDTO;
-import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
-import fpt.swp.WorkSpace.models.*;
-import fpt.swp.WorkSpace.repository.*;
+import fpt.swp.workspace.DTO.BookedSlotDTO;
+import fpt.swp.workspace.DTO.CustomerServiceDTO;
+import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.models.*;
+import fpt.swp.workspace.repository.*;
 
-import fpt.swp.WorkSpace.util.Helper;
+import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;

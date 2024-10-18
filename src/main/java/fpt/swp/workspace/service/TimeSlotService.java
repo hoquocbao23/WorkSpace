@@ -1,7 +1,7 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.TimeSlot;
-import fpt.swp.WorkSpace.repository.TimeSlotRepository;
+import fpt.swp.workspace.models.TimeSlot;
+import fpt.swp.workspace.repository.TimeSlotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

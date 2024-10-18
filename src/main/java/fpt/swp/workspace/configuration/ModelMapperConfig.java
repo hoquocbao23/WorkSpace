@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.configuration;
+package fpt.swp.workspace.configuration;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

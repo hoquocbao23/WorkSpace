@@ -1,16 +1,13 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import com.amazonaws.services.kms.model.NotFoundException;
-import fpt.swp.WorkSpace.models.Customer;
-import fpt.swp.WorkSpace.models.Room;
-import fpt.swp.WorkSpace.models.Transaction;
-import fpt.swp.WorkSpace.models.Wallet;
-import fpt.swp.WorkSpace.response.APIResponse;
-import fpt.swp.WorkSpace.response.ResponseHandler;
-import fpt.swp.WorkSpace.response.TransactionResponse;
-import fpt.swp.WorkSpace.service.ICustomerService;
-import fpt.swp.WorkSpace.service.IRoomService;
-import fpt.swp.WorkSpace.service.TransactionService;
+import fpt.swp.workspace.models.Customer;
+import fpt.swp.workspace.models.Wallet;
+import fpt.swp.workspace.response.APIResponse;
+import fpt.swp.workspace.response.ResponseHandler;
+import fpt.swp.workspace.response.TransactionResponse;
+import fpt.swp.workspace.service.ICustomerService;
+import fpt.swp.workspace.service.IRoomService;
+import fpt.swp.workspace.service.TransactionService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

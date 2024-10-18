@@ -1,8 +1,8 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.models.TimeSlot;
-import fpt.swp.WorkSpace.response.ResponseHandler;
-import fpt.swp.WorkSpace.service.ITimeSlotService;
+import fpt.swp.workspace.models.TimeSlot;
+import fpt.swp.workspace.response.ResponseHandler;
+import fpt.swp.workspace.service.ITimeSlotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

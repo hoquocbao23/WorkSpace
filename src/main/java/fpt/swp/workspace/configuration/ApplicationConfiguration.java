@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.configuration;
+package fpt.swp.workspace.configuration;
 
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -6,8 +6,8 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import fpt.swp.WorkSpace.repository.UserRepository;
-import fpt.swp.WorkSpace.service.CustomUserDetailService;
+import fpt.swp.workspace.repository.UserRepository;
+import fpt.swp.workspace.service.CustomUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

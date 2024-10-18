@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.TimeSlot;
+import fpt.swp.workspace.models.TimeSlot;
 
 import java.util.List;
 

@@ -1,10 +1,8 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.Customer;
-import fpt.swp.WorkSpace.models.User;
-import fpt.swp.WorkSpace.models.Wallet;
-import fpt.swp.WorkSpace.repository.CustomerRepository;
-import fpt.swp.WorkSpace.repository.UserRepository;
+import fpt.swp.workspace.models.Customer;
+import fpt.swp.workspace.models.Wallet;
+import fpt.swp.workspace.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

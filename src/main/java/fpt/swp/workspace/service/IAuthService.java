@@ -1,10 +1,9 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.auth.AuthenticationResponse;
-import fpt.swp.WorkSpace.auth.LoginRequest;
-import fpt.swp.WorkSpace.auth.RegisterRequest;
+import fpt.swp.workspace.auth.AuthenticationResponse;
+import fpt.swp.workspace.auth.LoginRequest;
+import fpt.swp.workspace.auth.RegisterRequest;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 public interface IAuthService {
     AuthenticationResponse register(RegisterRequest request);

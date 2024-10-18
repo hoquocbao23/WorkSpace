@@ -1,12 +1,10 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.DTO.BookedSlotDTO;
-import fpt.swp.WorkSpace.DTO.CustomerServiceDTO;
-import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
-import fpt.swp.WorkSpace.models.OrderBooking;
-import fpt.swp.WorkSpace.response.OrderBookingResponse;
-import fpt.swp.WorkSpace.response.ResponseHandler;
-import fpt.swp.WorkSpace.service.IOrderBookingService;
+import fpt.swp.workspace.DTO.BookedSlotDTO;
+import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.models.OrderBooking;
+import fpt.swp.workspace.response.ResponseHandler;
+import fpt.swp.workspace.service.IOrderBookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +12,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

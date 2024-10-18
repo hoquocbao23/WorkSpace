@@ -1,9 +1,9 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.models.Building;
-import fpt.swp.WorkSpace.response.APIResponse;
-import fpt.swp.WorkSpace.response.BuildingRequest;
-import fpt.swp.WorkSpace.service.BuildingService;
+import fpt.swp.workspace.models.Building;
+import fpt.swp.workspace.response.APIResponse;
+import fpt.swp.workspace.response.BuildingRequest;
+import fpt.swp.workspace.service.BuildingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

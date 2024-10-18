@@ -1,12 +1,12 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
-import fpt.swp.WorkSpace.DTO.RoomDTO;
-import fpt.swp.WorkSpace.auth.AuthenticationResponse;
-import fpt.swp.WorkSpace.models.*;
-import fpt.swp.WorkSpace.repository.*;
-import fpt.swp.WorkSpace.response.*;
+import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.DTO.RoomDTO;
+import fpt.swp.workspace.auth.AuthenticationResponse;
+import fpt.swp.workspace.models.*;
+import fpt.swp.workspace.repository.*;
+import fpt.swp.workspace.response.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

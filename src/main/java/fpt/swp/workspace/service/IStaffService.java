@@ -1,7 +1,7 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.DTO.RoomDTO;
-import fpt.swp.WorkSpace.models.Staff;
+import fpt.swp.workspace.DTO.RoomDTO;
+import fpt.swp.workspace.models.Staff;
 
 import java.util.List;
 

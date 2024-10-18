@@ -1,7 +1,6 @@
-package fpt.swp.WorkSpace.models;
+package fpt.swp.workspace.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 

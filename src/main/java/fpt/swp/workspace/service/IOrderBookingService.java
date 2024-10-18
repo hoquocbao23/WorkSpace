@@ -1,9 +1,9 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.DTO.BookedSlotDTO;
-import fpt.swp.WorkSpace.DTO.CustomerServiceDTO;
-import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
-import fpt.swp.WorkSpace.models.OrderBooking;
+import fpt.swp.workspace.DTO.BookedSlotDTO;
+import fpt.swp.workspace.DTO.CustomerServiceDTO;
+import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.models.OrderBooking;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;

@@ -1,9 +1,9 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.DTO.ServiceItemsDTO;
-import fpt.swp.WorkSpace.models.ServiceItems;
-import fpt.swp.WorkSpace.repository.ServiceItemsRepository;
-import fpt.swp.WorkSpace.util.Helper;
+import fpt.swp.workspace.DTO.ServiceItemsDTO;
+import fpt.swp.workspace.models.ServiceItems;
+import fpt.swp.workspace.repository.ServiceItemsRepository;
+import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

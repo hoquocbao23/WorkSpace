@@ -1,8 +1,8 @@
-package fpt.swp.WorkSpace.configuration;
+package fpt.swp.workspace.configuration;
 
 
 
-import fpt.swp.WorkSpace.service.JWTService;
+import fpt.swp.workspace.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

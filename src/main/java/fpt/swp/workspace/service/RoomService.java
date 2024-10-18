@@ -1,20 +1,19 @@
 
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import fpt.swp.WorkSpace.DTO.RoomDTO;
-import fpt.swp.WorkSpace.models.Building;
-import fpt.swp.WorkSpace.models.Room;
-import fpt.swp.WorkSpace.models.RoomType;
-import fpt.swp.WorkSpace.models.Staff;
-import fpt.swp.WorkSpace.repository.BuildingRepository;
-import fpt.swp.WorkSpace.repository.RoomRepository;
-import fpt.swp.WorkSpace.repository.RoomTypeRepository;
-import fpt.swp.WorkSpace.repository.StaffRepository;
-import fpt.swp.WorkSpace.util.Helper;
+import fpt.swp.workspace.DTO.RoomDTO;
+import fpt.swp.workspace.models.Building;
+import fpt.swp.workspace.models.Room;
+import fpt.swp.workspace.models.RoomType;
+import fpt.swp.workspace.models.Staff;
+import fpt.swp.workspace.repository.BuildingRepository;
+import fpt.swp.workspace.repository.RoomRepository;
+import fpt.swp.workspace.repository.RoomTypeRepository;
+import fpt.swp.workspace.repository.StaffRepository;
+import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;

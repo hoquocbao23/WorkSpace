@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.auth;
+package fpt.swp.workspace.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

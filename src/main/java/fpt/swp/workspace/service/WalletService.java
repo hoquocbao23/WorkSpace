@@ -1,9 +1,8 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.Wallet;
-import fpt.swp.WorkSpace.repository.UserRepo;
-import fpt.swp.WorkSpace.repository.WalletRepository;
-import fpt.swp.WorkSpace.response.TopUpRequest;
+import fpt.swp.workspace.models.Wallet;
+import fpt.swp.workspace.repository.UserRepo;
+import fpt.swp.workspace.repository.WalletRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

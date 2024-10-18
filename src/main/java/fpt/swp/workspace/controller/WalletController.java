@@ -1,13 +1,7 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.models.Wallet;
-import fpt.swp.WorkSpace.response.APIResponse;
-import fpt.swp.WorkSpace.response.TopUpRequest;
-import fpt.swp.WorkSpace.service.WalletService;
+import fpt.swp.workspace.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
