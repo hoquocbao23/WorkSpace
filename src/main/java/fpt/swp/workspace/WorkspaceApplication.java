@@ -1,13 +1,14 @@
-package fpt.swp.workspace;
+package fpt.swp.WorkSpace;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 @SpringBootApplication
-public class WorkspaceApplication {
+public class  WorkSpaceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(WorkspaceApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(WorkSpaceApplication.class, args);
+	}
 
 }
