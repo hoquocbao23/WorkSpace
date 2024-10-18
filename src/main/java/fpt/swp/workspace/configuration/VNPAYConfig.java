@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.configuration;
+package fpt.swp.workspace.configuration;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.servlet.http.HttpServletRequest;

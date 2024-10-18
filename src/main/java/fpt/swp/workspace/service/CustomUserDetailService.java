@@ -1,7 +1,7 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.User;
-import fpt.swp.WorkSpace.repository.UserRepository;
+import fpt.swp.workspace.models.User;
+import fpt.swp.workspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

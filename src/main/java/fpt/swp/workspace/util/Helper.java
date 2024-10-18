@@ -1,15 +1,12 @@
-package fpt.swp.WorkSpace.util;
+package fpt.swp.workspace.util;
 
 
-import fpt.swp.WorkSpace.DTO.RoomDTO;
-import fpt.swp.WorkSpace.DTO.ServiceItemsDTO;
-import fpt.swp.WorkSpace.models.Room;
-import fpt.swp.WorkSpace.models.ServiceItems;
+import fpt.swp.workspace.DTO.RoomDTO;
+import fpt.swp.workspace.DTO.ServiceItemsDTO;
+import fpt.swp.workspace.models.Room;
+import fpt.swp.workspace.models.ServiceItems;
 
 
-
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;

@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.DTO;
+package fpt.swp.workspace.DTO;
 
 
 import lombok.Data;

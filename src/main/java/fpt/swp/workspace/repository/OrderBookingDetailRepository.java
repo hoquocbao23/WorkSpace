@@ -1,13 +1,10 @@
-package fpt.swp.WorkSpace.repository;
+package fpt.swp.workspace.repository;
 
-import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
-import fpt.swp.WorkSpace.models.OrderBookingDetail;
+import fpt.swp.workspace.models.OrderBookingDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public interface OrderBookingDetailRepository extends JpaRepository<OrderBookingDetail, Integer> {
 

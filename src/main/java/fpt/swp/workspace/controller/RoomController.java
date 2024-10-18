@@ -1,18 +1,17 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import fpt.swp.WorkSpace.DTO.RoomDTO;
-import fpt.swp.WorkSpace.models.Room;
-import fpt.swp.WorkSpace.models.RoomType;
-import fpt.swp.WorkSpace.response.ResponseHandler;
-import fpt.swp.WorkSpace.service.IRoomService;
+import fpt.swp.workspace.DTO.RoomDTO;
+import fpt.swp.workspace.models.Room;
+import fpt.swp.workspace.models.RoomType;
+import fpt.swp.workspace.response.ResponseHandler;
+import fpt.swp.workspace.service.IRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
 

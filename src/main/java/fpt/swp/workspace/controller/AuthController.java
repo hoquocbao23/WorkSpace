@@ -1,17 +1,14 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.auth.AuthenticationResponse;
-import fpt.swp.WorkSpace.auth.LoginRequest;
-import fpt.swp.WorkSpace.auth.RegisterRequest;
+import fpt.swp.workspace.auth.AuthenticationResponse;
+import fpt.swp.workspace.auth.LoginRequest;
+import fpt.swp.workspace.auth.RegisterRequest;
 
-import fpt.swp.WorkSpace.service.IAuthService;
+import fpt.swp.workspace.service.IAuthService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

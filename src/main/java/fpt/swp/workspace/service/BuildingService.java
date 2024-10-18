@@ -1,8 +1,8 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.Building;
-import fpt.swp.WorkSpace.repository.BuildingRepository;
-import fpt.swp.WorkSpace.response.BuildingRequest;
+import fpt.swp.workspace.models.Building;
+import fpt.swp.workspace.repository.BuildingRepository;
+import fpt.swp.workspace.response.BuildingRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

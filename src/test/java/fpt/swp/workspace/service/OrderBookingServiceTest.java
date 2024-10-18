@@ -1,7 +1,7 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.models.*;
-import fpt.swp.WorkSpace.repository.*;
+import fpt.swp.workspace.models.*;
+import fpt.swp.workspace.repository.*;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

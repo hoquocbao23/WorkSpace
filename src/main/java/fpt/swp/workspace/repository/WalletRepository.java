@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.repository;
+package fpt.swp.workspace.repository;
 
-import fpt.swp.WorkSpace.models.Wallet;
+import fpt.swp.workspace.models.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

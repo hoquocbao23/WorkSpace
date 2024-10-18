@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.response;
+package fpt.swp.workspace.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

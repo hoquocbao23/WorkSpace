@@ -1,7 +1,6 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.DTO.ServiceItemsDTO;
-import fpt.swp.WorkSpace.models.ServiceItems;
+import fpt.swp.workspace.DTO.ServiceItemsDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

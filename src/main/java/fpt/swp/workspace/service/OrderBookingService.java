@@ -1,19 +1,19 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.DTO.BookedSlotDTO;
-import fpt.swp.WorkSpace.DTO.CustomerServiceDTO;
-import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
-import fpt.swp.WorkSpace.models.*;
-import fpt.swp.WorkSpace.repository.*;
+import fpt.swp.workspace.DTO.BookedSlotDTO;
+import fpt.swp.workspace.DTO.CustomerServiceDTO;
+import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.models.*;
+import fpt.swp.workspace.repository.*;
 
-import fpt.swp.WorkSpace.util.Helper;
+import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -60,15 +60,15 @@ public class OrderBookingService implements IOrderBookingService {
     @Override
     public List<OrderBookingDetailDTO> getBookedSlotByRoomAndDate(String date, String roomId) {
         // get booking list checkin day and room avaiable
-        List<OrderBooking> bookings = orderBookingRepository.findTimeSlotBookedByRoomAndDate( date, roomId);
+        List<OrderBooking> bookings = orderBookingRepository.findTimeSlotBookedByRoomAndDate(date, roomId);
 
 
         List<OrderBookingDetailDTO> bookingList = new ArrayList<>();
 
-        if ( bookings.isEmpty()){
+        if (bookings.isEmpty()) {
             throw new RuntimeException("Ngay " + date + " chua co booking nao.");
         }
-        for (OrderBooking orderBooking : bookings){
+        for (OrderBooking orderBooking : bookings) {
             OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
             dto.setBookingId(orderBooking.getBookingId());
             dto.setRoomId(orderBooking.getRoom().getRoomId());
@@ -79,13 +79,13 @@ public class OrderBookingService implements IOrderBookingService {
             // Get all timeslot in Booking
             List<TimeSlot> timeSlotIdBooked = new ArrayList<>();
             int countSlot = orderBooking.getSlot().size();
-            for (int i = 0; i < countSlot; i++){
+            for (int i = 0; i < countSlot; i++) {
                 timeSlotIdBooked.add(orderBooking.getSlot().get(i));
             }
             dto.setSlots(timeSlotIdBooked);
             bookingList.add(dto);
         }
-        return bookingList ;
+        return bookingList;
     }
 
     @Override
@@ -96,10 +96,10 @@ public class OrderBookingService implements IOrderBookingService {
 
         List<OrderBookingDetailDTO> bookingList = new ArrayList<>();
 
-        if ( bookings.isEmpty()){
+        if (bookings.isEmpty()) {
             throw new RuntimeException("Ngay " + date + " chua co booking nao.");
         }
-        for (OrderBooking orderBooking : bookings){
+        for (OrderBooking orderBooking : bookings) {
             OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
             dto.setBookingId(orderBooking.getBookingId());
             dto.setRoomId(orderBooking.getRoom().getRoomId());
@@ -110,13 +110,13 @@ public class OrderBookingService implements IOrderBookingService {
             // Get all timeslot in Booking
             List<TimeSlot> timeSlotIdBooked = new ArrayList<>();
             int countSlot = orderBooking.getSlot().size();
-            for (int i = 0; i < countSlot; i++){
+            for (int i = 0; i < countSlot; i++) {
                 timeSlotIdBooked.add(orderBooking.getSlot().get(i));
             }
             dto.setSlots(timeSlotIdBooked);
             bookingList.add(dto);
         }
-        return bookingList ;
+        return bookingList;
     }
 
     @Override
@@ -130,52 +130,53 @@ public class OrderBookingService implements IOrderBookingService {
         for (OrderBooking orderBooking : bookings) {
             OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
             dto.setBookingId(orderBooking.getBookingId());
-        }return bookingList;
+        }
+        return bookingList;
     }
 
 
-        @Override
-        public BookedSlotDTO getBookedSlotByEachDay(String checkin, String checkout, String roomId, String buildingId) {
-            BookedSlotDTO bookedSlotDTO = new BookedSlotDTO();
-            Map<String, ArrayList<Integer>> mapBookedSlots = new LinkedHashMap<>();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            LocalDate checkinDate = LocalDate.parse(checkin);
-            LocalDate checkoutDate = LocalDate.parse(checkout);
-            long numberOfDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate) + 1 ;
-            IntStream.range(0, (int) numberOfDays).forEach(i -> {
-                // increase date
-                LocalDate bookingDate = checkinDate.plusDays(i);
-                String bookingDateStr = bookingDate.format(formatter);
-                ArrayList<Integer> timeSlotIdBooked = new ArrayList<>();
-                // get all booked in a day
-                List<OrderBooking> bookings = orderBookingRepository.findBookingsByDate(bookingDateStr, buildingId);
-                if (!bookings.isEmpty()){
-                    // loop each booking in day
-                    for (OrderBooking orderBooking : bookings){
-                        // get all timeslot booked in each booking
-                        List<TimeSlot> timeSlotBooked = orderBooking.getSlot();
-                        // create a list to save timeslotId
-                        // loop each slot, get slot id
-                        for (TimeSlot timeSlot : timeSlotBooked){
-                            int slotId = timeSlot.getTimeSlotId();
-                            timeSlotIdBooked.add(slotId);
-                            System.out.println(timeSlotIdBooked);
-                        }
+    @Override
+    public BookedSlotDTO getBookedSlotByEachDay(String checkin, String checkout, String roomId, String buildingId) {
+        BookedSlotDTO bookedSlotDTO = new BookedSlotDTO();
+        Map<String, ArrayList<Integer>> mapBookedSlots = new LinkedHashMap<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate checkinDate = LocalDate.parse(checkin);
+        LocalDate checkoutDate = LocalDate.parse(checkout);
+        long numberOfDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate) + 1;
+        IntStream.range(0, (int) numberOfDays).forEach(i -> {
+            // increase date
+            LocalDate bookingDate = checkinDate.plusDays(i);
+            String bookingDateStr = bookingDate.format(formatter);
+            ArrayList<Integer> timeSlotIdBooked = new ArrayList<>();
+            // get all booked in a day
+            List<OrderBooking> bookings = orderBookingRepository.findBookingsByDate(bookingDateStr, buildingId);
+            if (!bookings.isEmpty()) {
+                // loop each booking in day
+                for (OrderBooking orderBooking : bookings) {
+                    // get all timeslot booked in each booking
+                    List<TimeSlot> timeSlotBooked = orderBooking.getSlot();
+                    // create a list to save timeslotId
+                    // loop each slot, get slot id
+                    for (TimeSlot timeSlot : timeSlotBooked) {
+                        int slotId = timeSlot.getTimeSlotId();
+                        timeSlotIdBooked.add(slotId);
+                        System.out.println(timeSlotIdBooked);
                     }
-                    // put avaiable date and slot id to map
-                    mapBookedSlots.put(bookingDateStr, timeSlotIdBooked);
                 }
-            });
-            bookedSlotDTO.setBookedSlots(mapBookedSlots);
-            return bookedSlotDTO ;
-        }
+                // put avaiable date and slot id to map
+                mapBookedSlots.put(bookingDateStr, timeSlotIdBooked);
+            }
+        });
+        bookedSlotDTO.setBookedSlots(mapBookedSlots);
+        return bookedSlotDTO;
+    }
 
 
     @Override
     public OrderBooking createOrderBooking(String jwttoken, String roomId, String checkinDate, List<Integer> slotBooking, String note) {
 
         String username = jwtService.extractUsername(jwttoken);
-        Customer customer =  customerRepository.findCustomerByUsername(username);
+        Customer customer = customerRepository.findCustomerByUsername(username);
 
         Room room = roomRepository.findById(roomId).get();
         int countSlot = slotBooking.size();
@@ -183,13 +184,13 @@ public class OrderBookingService implements IOrderBookingService {
 
         // get time slot booked by customer
         List<TimeSlot> timeSlots = new ArrayList<>();
-        for (int i = 0; i < countSlot; i++){
+        for (int i = 0; i < countSlot; i++) {
             TimeSlot timeSlot = timeSlotRepository.findById(slotBooking.get(i)).get();
             timeSlots.add(timeSlot);
         }
 
         OrderBooking orderBooking = new OrderBooking();
-        orderBooking.setBookingId(Helper.generateRandomString(0,5));
+        orderBooking.setBookingId(Helper.generateRandomString(0, 5));
         orderBooking.setCustomer(customer);
         orderBooking.setRoom(room);
         orderBooking.setCheckinDate(checkinDate);
@@ -235,7 +236,7 @@ public class OrderBookingService implements IOrderBookingService {
         // get time slot booked by customer
         int countSlot = slotBooking.size();
         List<TimeSlot> timeSlots = new ArrayList<>();
-        for (int i = 0; i < countSlot; i++){
+        for (int i = 0; i < countSlot; i++) {
             TimeSlot timeSlot = timeSlotRepository.findById(slotBooking.get(i)).get();
             timeSlots.add(timeSlot);
         }
@@ -246,7 +247,7 @@ public class OrderBookingService implements IOrderBookingService {
         //days between checkin - checkout
         long numberDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate) + 1;
         System.out.println(numberDays);
-        float roomPrice  = room.getPrice() * countSlot * (int) numberDays;
+        float roomPrice = room.getPrice() * countSlot * (int) numberDays;
         float servicePriceTotal = 0.0f;
 
         OrderBooking orderBooking = new OrderBooking();
@@ -279,14 +280,14 @@ public class OrderBookingService implements IOrderBookingService {
                     orderBookingDetail.setService(item);
                     orderBookingDetail.setBookingServiceQuantity(quantity);
                     orderBookingDetail.setBookingServicePrice(servicePrice);
-                    servicePriceTotal += servicePrice  ;
+                    servicePriceTotal += servicePrice;
                     orderBookingDetailRepository.save(orderBookingDetail);
                 }
             }
         }
         float totalPriceWithServices = roomPrice + servicePriceTotal;
         // Áp dụng giảm giá dựa trên loại membership
-        totalPriceWithServices -= totalPriceWithServices  * discount;
+        totalPriceWithServices -= totalPriceWithServices * discount;
 
         orderBooking.setTotalPrice(totalPriceWithServices);
         orderBookingRepository.save(orderBooking);
@@ -334,7 +335,7 @@ public class OrderBookingService implements IOrderBookingService {
         // get time slot booked by customer
         int countSlot = slotBooking.length;
         List<TimeSlot> timeSlots = new ArrayList<>();
-        for (int i = 0; i < countSlot; i++){
+        for (int i = 0; i < countSlot; i++) {
             TimeSlot timeSlot = timeSlotRepository.findById(slotBooking[i]).get();
             timeSlots.add(timeSlot);
         }
@@ -368,7 +369,7 @@ public class OrderBookingService implements IOrderBookingService {
         String userName = jwtService.extractUsername(jwttoken);
         List<OrderBooking> historyBookingList = orderBookingRepository.getCustomerHistoryBooking(userName);
         List<OrderBookingDetailDTO> orderDetail = new ArrayList<>();
-        for (OrderBooking orderBooking : historyBookingList){
+        for (OrderBooking orderBooking : historyBookingList) {
             OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
             dto.setBookingId(orderBooking.getBookingId());
             dto.setRoomId(orderBooking.getRoom().getRoomId());
@@ -387,23 +388,23 @@ public class OrderBookingService implements IOrderBookingService {
 
 
             // get service items
-           List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
-           Map<String, Integer> serviceList = new HashMap<>();
-           for (OrderBookingDetail bookingDetail : bookingDetails){
-               String serviceName = bookingDetail.getService().getServiceName();
-               int quantity = bookingDetail.getBookingServiceQuantity();
-               serviceList.put(serviceName, quantity);
-           }
+            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
+            Map<String, Integer> serviceList = new HashMap<>();
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
+                String serviceName = bookingDetail.getService().getServiceName();
+                int quantity = bookingDetail.getBookingServiceQuantity();
+                serviceList.put(serviceName, quantity);
+            }
             dto.setServiceItems(serviceList);
             orderDetail.add(dto);
-    }
+        }
         return orderDetail;
     }
 
     @Override
     public OrderBooking createOrderBookingService(String jwttoken, String roomId, String checkinDate, List<Integer> slotBooking, MultiValueMap<Integer, Integer> items, String note) {
         String username = jwtService.extractUsername(jwttoken);
-        Customer customer =  customerRepository.findCustomerByUsername(username);
+        Customer customer = customerRepository.findCustomerByUsername(username);
         Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException("Room not found"));
 
         int countSlot = slotBooking.size();
@@ -411,14 +412,14 @@ public class OrderBookingService implements IOrderBookingService {
 
         // get time slot booked by customer
         List<TimeSlot> timeSlots = new ArrayList<>();
-        for (int i = 0; i < countSlot; i++){
+        for (int i = 0; i < countSlot; i++) {
             TimeSlot timeSlot = timeSlotRepository.findById(slotBooking.get(i)).get();
             timeSlots.add(timeSlot);
         }
 
 
         OrderBooking orderBooking = new OrderBooking();
-        orderBooking.setBookingId(Helper.generateRandomString(0,5));
+        orderBooking.setBookingId(Helper.generateRandomString(0, 5));
         orderBooking.setCustomer(customer);
         orderBooking.setRoom(room);
         orderBooking.setCheckinDate(checkinDate);
@@ -430,7 +431,7 @@ public class OrderBookingService implements IOrderBookingService {
         orderBookingRepository.save(orderBooking);   // save to table order booking
 
 
-        if (!items.isEmpty()){
+        if (!items.isEmpty()) {
             // Xử lý items (service id và số lượng)
             for (Map.Entry<Integer, List<Integer>> entry : items.entrySet()) {
                 Integer serviceId = entry.getKey();
@@ -475,7 +476,7 @@ public class OrderBookingService implements IOrderBookingService {
 
                 OrderBookingDetail orderBookingDetail = orderBookingDetailRepository.findDetailByBookingIdAndServiceId(orderBooking.getBookingId(), serviceId);
 
-                    // If orderBookingDetail already exist
+                // If orderBookingDetail already exist
                 if (orderBookingDetail != null) {
                     // update quantity in table
                     int oldQuantity = orderBookingDetail.getBookingServiceQuantity();
@@ -524,7 +525,7 @@ public class OrderBookingService implements IOrderBookingService {
         List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBookingId);
 
         Map<String, Integer> serviceList = new HashMap<>();
-        for (OrderBookingDetail bookingDetail : bookingDetails){
+        for (OrderBookingDetail bookingDetail : bookingDetails) {
             String serviceName = bookingDetail.getService().getServiceName();
             int quantity = bookingDetail.getBookingServiceQuantity();
 
@@ -538,7 +539,7 @@ public class OrderBookingService implements IOrderBookingService {
     }
 
     @Override
-    public String cancelOrderBooking(String jwttoken,String orderBookingId) {
+    public void cancelOrderBooking(String jwttoken, String orderBookingId) {
         String username = jwtService.extractUsername(jwttoken);
         Customer customer = customerRepository.findCustomerByUsername(username);
 
@@ -547,37 +548,75 @@ public class OrderBookingService implements IOrderBookingService {
         if (!orderBooking.getCustomer().getUserId().equals(customer.getUserId())) {
             throw new RuntimeException("Unauthorized access to this booking");
         }
+
         if (!orderBooking.getStatus().equals(BookingStatus.UPCOMING)) {
             throw new RuntimeException("Booking cannot be canceled");
         }
-        orderBooking.setStatus(BookingStatus.CANCELLED);
-        orderBookingRepository.save(orderBooking);
 
-        Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
-                .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+        LocalDate checkinDate = LocalDate.parse(orderBooking.getCheckinDate());
+        //days between now - checkin date
+        long numberDays = ChronoUnit.DAYS.between(LocalDate.now(), checkinDate);
+        if (numberDays > 1) {
+            // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
+            orderBooking.setStatus(BookingStatus.CANCELLED);
+            orderBookingRepository.save(orderBooking);
 
-        Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+            Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+                    .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
 
-        if (payment.getStatus().equals("completed")) {
-            // Hoàn lại tiền vào ví
-            wallet.setAmount(wallet.getAmount() + payment.getAmount());
-            walletRepository.save(wallet);
+            Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                    .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
-            Transaction refundTransaction = new Transaction();
-            refundTransaction.setTransactionId(UUID.randomUUID().toString());
-            refundTransaction.setAmount(payment.getAmount());
-            refundTransaction.setStatus("completed");
-            refundTransaction.setType("refund");
-            refundTransaction.setTransaction_time(LocalDateTime.now());
-            refundTransaction.setPayment(payment);
-            transactionRepository.save(refundTransaction);
-            payment.setStatus("completed");
-            paymentRepository.save(payment);
+            if (payment.getStatus().equals("completed")) {
+                // Hoàn lại tiền vào ví
+                wallet.setAmount(wallet.getAmount() + payment.getAmount());
+                walletRepository.save(wallet);
 
-            return "Booking cancelled and payment refunded successfully";
+                Transaction refundTransaction = new Transaction();
+                refundTransaction.setTransactionId(UUID.randomUUID().toString());
+                refundTransaction.setAmount(payment.getAmount());
+                refundTransaction.setStatus("completed");
+                refundTransaction.setType("refund");
+                refundTransaction.setTransaction_time(LocalDateTime.now());
+                refundTransaction.setPayment(payment);
+                transactionRepository.save(refundTransaction);
+                payment.setStatus("completed");
+                paymentRepository.save(payment);
+            }
         } else {
-            return "Booking cancelled. No payment was made, so no refund is required";
+            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
+            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
+            if (hours > 6) {
+                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
+                orderBooking.setStatus(BookingStatus.CANCELLED);
+                orderBookingRepository.save(orderBooking);
+
+                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+
+                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+                if (payment.getStatus().equals("completed")) {
+                    // Hoàn lại tiền vào ví
+                    wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
+                    walletRepository.save(wallet);
+
+                    Transaction refundTransaction = new Transaction();
+                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
+                    refundTransaction.setAmount(payment.getAmount() * 0.5f);
+                    refundTransaction.setStatus("completed");
+                    refundTransaction.setType("refund");
+                    refundTransaction.setTransaction_time(LocalDateTime.now());
+                    refundTransaction.setPayment(payment);
+                    transactionRepository.save(refundTransaction);
+                    payment.setStatus("completed");
+                    paymentRepository.save(payment);
+                }
+            }else{
+                orderBooking.setStatus(BookingStatus.CANCELLED);
+                orderBookingRepository.save(orderBooking);
+            }
         }
     }
 }

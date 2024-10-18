@@ -1,9 +1,8 @@
-package fpt.swp.WorkSpace.auth;
+package fpt.swp.workspace.auth;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import fpt.swp.WorkSpace.models.Customer;
-import fpt.swp.WorkSpace.models.User;
+import fpt.swp.workspace.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

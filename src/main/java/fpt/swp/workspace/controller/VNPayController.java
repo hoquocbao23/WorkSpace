@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
-import fpt.swp.WorkSpace.service.VNPAYService;
+import fpt.swp.workspace.service.VNPAYService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

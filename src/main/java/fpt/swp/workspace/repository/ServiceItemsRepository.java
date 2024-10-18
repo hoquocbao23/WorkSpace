@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.repository;
+package fpt.swp.workspace.repository;
 
-import fpt.swp.WorkSpace.models.ServiceItems;
+import fpt.swp.workspace.models.ServiceItems;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

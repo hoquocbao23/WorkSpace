@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.repository;
+package fpt.swp.workspace.repository;
 
-import fpt.swp.WorkSpace.models.User;
+import fpt.swp.workspace.models.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

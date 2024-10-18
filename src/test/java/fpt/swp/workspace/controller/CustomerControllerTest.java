@@ -1,9 +1,9 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fpt.swp.WorkSpace.auth.LoginRequest;
-import fpt.swp.WorkSpace.auth.RegisterRequest;
-import fpt.swp.WorkSpace.service.AuthService;
+import fpt.swp.workspace.auth.LoginRequest;
+import fpt.swp.workspace.auth.RegisterRequest;
+import fpt.swp.workspace.service.AuthService;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.mockito.MockitoAnnotations;
@@ -16,13 +16,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.NoSuchElementException;
-
 import static io.restassured.RestAssured.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.testng.Assert.*;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CustomerControllerTest extends AbstractTestNGSpringContextTests {

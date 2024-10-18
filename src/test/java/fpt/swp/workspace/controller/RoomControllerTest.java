@@ -1,33 +1,26 @@
-package fpt.swp.WorkSpace.controller;
+package fpt.swp.workspace.controller;
 
 import com.amazonaws.services.kms.model.NotFoundException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import fpt.swp.WorkSpace.models.Room;
-import fpt.swp.WorkSpace.service.RoomService;
-import org.junit.jupiter.api.BeforeEach;
+import fpt.swp.workspace.models.Room;
+import fpt.swp.workspace.service.RoomService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.testng.Assert.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc

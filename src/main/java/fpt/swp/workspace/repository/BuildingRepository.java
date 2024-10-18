@@ -1,6 +1,6 @@
-package fpt.swp.WorkSpace.repository;
+package fpt.swp.workspace.repository;
 
-import fpt.swp.WorkSpace.models.Building;
+import fpt.swp.workspace.models.Building;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

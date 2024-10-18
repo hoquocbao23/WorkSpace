@@ -1,16 +1,15 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.auth.AuthenticationResponse;
-import fpt.swp.WorkSpace.auth.LoginRequest;
-import fpt.swp.WorkSpace.auth.RegisterRequest;
+import fpt.swp.workspace.auth.AuthenticationResponse;
+import fpt.swp.workspace.auth.LoginRequest;
+import fpt.swp.workspace.auth.RegisterRequest;
 
-import fpt.swp.WorkSpace.models.Customer;
-import fpt.swp.WorkSpace.models.User;
-import fpt.swp.WorkSpace.models.Wallet;
-import fpt.swp.WorkSpace.repository.CustomerRepository;
-import fpt.swp.WorkSpace.repository.UserRepository;
-import fpt.swp.WorkSpace.repository.WalletRepository;
-import jakarta.servlet.ServletException;
+import fpt.swp.workspace.models.Customer;
+import fpt.swp.workspace.models.User;
+import fpt.swp.workspace.models.Wallet;
+import fpt.swp.workspace.repository.CustomerRepository;
+import fpt.swp.workspace.repository.UserRepository;
+import fpt.swp.workspace.repository.WalletRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service

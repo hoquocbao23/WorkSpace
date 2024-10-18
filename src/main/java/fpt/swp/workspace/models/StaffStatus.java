@@ -1,4 +1,4 @@
-package fpt.swp.WorkSpace.models;
+package fpt.swp.workspace.models;
 
 public enum StaffStatus {
     active, inactive, vacation

@@ -1,14 +1,12 @@
-package fpt.swp.WorkSpace.service;
+package fpt.swp.workspace.service;
 
-import fpt.swp.WorkSpace.configuration.VNPAYConfig;
-import fpt.swp.WorkSpace.models.Customer;
-import fpt.swp.WorkSpace.models.Payment;
-import fpt.swp.WorkSpace.models.Transaction;
-import fpt.swp.WorkSpace.models.Wallet;
-import fpt.swp.WorkSpace.repository.CustomerRepository;
-import fpt.swp.WorkSpace.repository.PaymentRepository;
-import fpt.swp.WorkSpace.repository.TransactionRepository;
-import fpt.swp.WorkSpace.repository.WalletRepository;
+import fpt.swp.workspace.configuration.VNPAYConfig;
+import fpt.swp.workspace.models.Customer;
+import fpt.swp.workspace.models.Payment;
+import fpt.swp.workspace.models.Transaction;
+import fpt.swp.workspace.repository.CustomerRepository;
+import fpt.swp.workspace.repository.PaymentRepository;
+import fpt.swp.workspace.repository.TransactionRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
