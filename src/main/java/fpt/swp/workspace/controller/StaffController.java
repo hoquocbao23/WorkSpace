@@ -3,6 +3,7 @@ package fpt.swp.workspace.controller;
 import com.amazonaws.services.kms.model.NotFoundException;
 import fpt.swp.workspace.DTO.RoomDTO;
 import fpt.swp.workspace.auth.AuthenticationResponse;
+import fpt.swp.workspace.models.BookingStatus;
 import fpt.swp.workspace.models.Staff;
 import fpt.swp.workspace.response.*;
 import fpt.swp.workspace.service.RoomService;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
 
 @RestController
@@ -135,11 +137,42 @@ public class StaffController {
     }
 
     @GetMapping("/check-order-booking")
-    public ResponseEntity<Object> getCheckOrderBooking() {
+    public ResponseEntity<Object> getAllOrderBooking() {
         try {
             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getOrderBookingDetails());
         }catch (NullPointerException e){
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/check-customer-order-booking-email")
+    public ResponseEntity<Object> getCustomerOrderBookingByEmail(@RequestParam("date") String date, @RequestParam("email") String email) {
+        try {
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.checkinByEmail(date, email));
+        }catch (NullPointerException e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/check-customer-order-booking-phone")
+    public ResponseEntity<Object> getCustomerOrderBookingByPhone(@RequestParam("date") String date, @RequestParam("phonenumber") String phonenumber) {
+        try {
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.checkinByPhonenumber(date, phonenumber));
+        }catch (NullPointerException e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/update-booking-status")
+        public ResponseEntity<Object> updateOrderStatus(@RequestParam("bookingId") String bookingId, @RequestParam("status") BookingStatus status) {
+        try {
+             staffService.updateOrderStatus(bookingId, status);
+            return ResponseHandler.responseBuilder("Cập nhập thành công", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
 }

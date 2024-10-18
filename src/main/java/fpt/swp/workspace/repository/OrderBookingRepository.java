@@ -35,6 +35,12 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
     @Query("SELECT b FROM OrderBooking b where (b.customer.user.userName = ?1) order by b.createAt desc ")
     List<OrderBooking> getCustomerHistoryBooking(String username );
 
+    @Query("SELECT b FROM OrderBooking b WHERE  (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) AND b.customer.email = ?2 ")
+    List<OrderBooking> getCustomerOrderByEmailAndDate(String date, String email);
+
+    @Query("SELECT b FROM OrderBooking b WHERE  (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) AND b.customer.phoneNumber= ?2 ")
+    List<OrderBooking> getCustomerOrderByPhoneAndDate(String date, String phoneNumber);
+
     @Query("SELECT b FROM OrderBooking b WHERE b.customer.userId = ?1")
     Page<OrderBooking> findByCustomerCustomerId(String userId, Pageable pageable);
 
