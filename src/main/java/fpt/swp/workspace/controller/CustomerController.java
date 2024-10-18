@@ -76,7 +76,7 @@ public class CustomerController {
 
     @PutMapping("/customer/manage-profile/update-img")
     public ResponseEntity<Object> updateProfile(@RequestHeader("Authorization") String token,
-                                                MultipartFile file){
+                                                @RequestParam("image") MultipartFile file){
         String jwtToken = token.substring(7);
         try{
             customerService.updateCustomerImg(jwtToken, file);

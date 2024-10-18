@@ -1,9 +1,11 @@
 package fpt.swp.WorkSpace.controller;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import fpt.swp.WorkSpace.DTO.RoomDTO;
 import fpt.swp.WorkSpace.auth.AuthenticationResponse;
 import fpt.swp.WorkSpace.models.Staff;
 import fpt.swp.WorkSpace.response.*;
+import fpt.swp.WorkSpace.service.RoomService;
 import fpt.swp.WorkSpace.service.StaffService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -20,6 +22,8 @@ import java.util.List;
 public class StaffController {
     @Autowired
     private StaffService staffService;
+    @Autowired
+    private RoomService roomService;
 
     @PostMapping()
     public ResponseEntity<AuthenticationResponse> createStaff(@Valid @RequestBody StaffRequest request) {
@@ -85,15 +89,28 @@ public class StaffController {
         }
     }
 
-    @PutMapping("status/{roomId}")
-    public ResponseEntity<APIResponse<RoomStatusResponse>> updateRoomStatus(@PathVariable String roomId, @RequestBody RoomStatusRequest request) {
+//    @PutMapping("status/{roomId}")
+//    public ResponseEntity<APIResponse<RoomStatusResponse>> updateRoomStatus(@PathVariable String roomId, @RequestBody RoomStatusRequest request) {
+//        try {
+//            RoomStatusResponse updatedRoomStatus = staffService.updateRoomStatus(roomId, request);
+//            APIResponse<RoomStatusResponse> response = new APIResponse<>("Room status updated successfully", updatedRoomStatus);
+//            return ResponseEntity.status(HttpStatus.OK).body(response);
+//        } catch (RuntimeException e) {
+//            APIResponse<RoomStatusResponse> response = new APIResponse<>(e.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//        }
+//    }
+
+    @PutMapping("room-status/{roomId}")
+    public ResponseEntity<Object> updateRoomStatus(@PathVariable String roomId,
+                                           @RequestParam("status") String status) {
         try {
-            RoomStatusResponse updatedRoomStatus = staffService.updateRoomStatus(roomId, request);
-            APIResponse<RoomStatusResponse> response = new APIResponse<>("Room status updated successfully", updatedRoomStatus);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            roomService.updateRoomStatus(roomId, status);
+            return ResponseHandler.responseBuilder("Room status updated successfully", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (RuntimeException e) {
-            APIResponse<RoomStatusResponse> response = new APIResponse<>(e.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

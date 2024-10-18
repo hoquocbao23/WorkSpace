@@ -4,12 +4,9 @@ import fpt.swp.WorkSpace.DTO.BookedSlotDTO;
 import fpt.swp.WorkSpace.DTO.CustomerServiceDTO;
 import fpt.swp.WorkSpace.DTO.OrderBookingDetailDTO;
 import fpt.swp.WorkSpace.models.OrderBooking;
-import fpt.swp.WorkSpace.response.OrderBookingResponse;
 import org.springframework.util.MultiValueMap;
 
-import java.sql.Date;
 import java.util.List;
-import java.util.Map;
 
 public interface IOrderBookingService {
     List<OrderBookingDetailDTO> getBookedSlotByRoomAndDate(String date, String roomId);
@@ -35,6 +32,8 @@ public interface IOrderBookingService {
 
     CustomerServiceDTO getCustomerService(String orderBookingId);
 
-    String cancelOrderBooking(String jwttoken,String orderBookingId);
+    void cancelOrderBooking(String jwttoken, String orderBookingId);
+
+
 
 }

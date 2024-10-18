@@ -210,13 +210,13 @@ public class StaffService {
                 .collect(Collectors.toList());
     }
 
-    public RoomStatusResponse updateRoomStatus(String roomId, RoomStatusRequest request) {
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Room not found: " + roomId));
-        room.setStatus(request.getRoomStatus());
-        roomRepository.save(room);
-        return new RoomStatusResponse(room.getRoomId(), room.getStatus());
-    }
+//    public RoomStatusResponse updateRoomStatus(String roomId, RoomStatusRequest request) {
+//        Room room = roomRepository.findById(roomId)
+//                .orElseThrow(() -> new RuntimeException("Room not found: " + roomId));
+//        room.setStatus(request.getRoomStatus());
+//        roomRepository.save(room);
+//        return new RoomStatusResponse(room.getRoomId(), room.getStatus());
+//    }
 
     public OrderStatusResponse updateOrderStatus(String bookingId, UpdateOrderBookingStatusRequest request) {
         OrderBooking order = orderBookingRepository.findByOrderId(bookingId)
@@ -225,6 +225,8 @@ public class StaffService {
         orderBookingRepository.save(order);
         return new OrderStatusResponse(order.getBookingId(), order.getStatus());
     }
+
+
 
     public List<RoomDTO> getRoomsAssigned(String token){
         String userName = jwtService.extractUsername(token);
@@ -276,7 +278,6 @@ public class StaffService {
             orderBookingDetailDTOList.add(dto);
         }
         return orderBookingDetailDTOList;
-
     }
 
 

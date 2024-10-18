@@ -5,7 +5,6 @@ import fpt.swp.WorkSpace.models.Room;
 import fpt.swp.WorkSpace.models.RoomType;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface IRoomService {
@@ -38,6 +37,8 @@ public interface IRoomService {
     List<RoomType> getAllRoomType();
 
     Room updateRoom(String roomId, String roomName, String price, String status, String[] staffId, String description);
+
+    void updateRoomStatus(String roomId, String roomStatus);
 
     void deleteRoom(String id);
 

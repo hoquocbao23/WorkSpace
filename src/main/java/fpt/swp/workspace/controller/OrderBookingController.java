@@ -240,10 +240,10 @@ public class OrderBookingController {
         String jwtToken = token.substring(7);
         System.out.println(jwtToken);
         try {
-            String cancellationMessage = orderBookingService.cancelOrderBooking(jwtToken, bookingId);
-            return ResponseHandler.responseBuilder("ok", HttpStatus.OK, cancellationMessage);
+             orderBookingService.cancelOrderBooking(jwtToken, bookingId);
+             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK);
         } catch (Exception e) {
-            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST, null);
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

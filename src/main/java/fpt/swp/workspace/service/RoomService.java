@@ -14,10 +14,9 @@ import fpt.swp.WorkSpace.repository.StaffRepository;
 import fpt.swp.WorkSpace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.function.support.RouterFunctionMapping;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -289,6 +288,18 @@ public class RoomService implements IRoomService{
             room.setDescription(description);
         }
         return roomRepository.save(room);
+    }
+
+    @Override
+    public void updateRoomStatus(String roomId, String roomStatus){
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow( () -> new NotFoundException("Room not found"));
+        if( !room.getStatus().equals(roomStatus) ){
+            room.setStatus(roomStatus);
+            roomRepository.save(room);
+        }else {
+            throw new RuntimeException("Status has been set");
+        }
     }
 
 

@@ -68,7 +68,9 @@ public class CustomerService implements ICustomerService {
                 if (newCustomer.getEmail() != null){
                     customer.setEmail(newCustomer.getEmail());
                 }
-
+                if (newCustomer.getDateOfBirth() != null){
+                    customer.setDateOfBirth(newCustomer.getDateOfBirth());
+                }
             }
         return customerRepository.save(customer);
     }
