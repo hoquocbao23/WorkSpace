@@ -30,8 +30,6 @@ public class Payment {
     @Column(name = "orderbooking_OBID", length = 10)
     private String orderBookingId;
 
-    @Column(name = "transaction_id", length = 45)
-    private String transactionId;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transaction> transactions = new ArrayList<>();

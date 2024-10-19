@@ -167,7 +167,6 @@ public class VNPAYService {
                 payment.setAmount((int) amount);
                 payment.setStatus("completed");
                 payment.setPaymentMethod("VNPay");
-                payment.setTransactionId(transactionId);
                 payment.setCustomer(customer);
                 paymentRepository.save(payment);
 

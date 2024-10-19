@@ -153,7 +153,7 @@ public class OrderBookingService implements IOrderBookingService {
             String bookingDateStr = bookingDate.format(formatter);
             ArrayList<Integer> timeSlotIdBooked = new ArrayList<>();
             // get all booked in a day
-            List<OrderBooking> bookings = orderBookingRepository.findBookingsByDate(bookingDateStr, buildingId, roomId);
+            List<OrderBooking> bookings = orderBookingRepository.findBookingsByDate(bookingDateStr, buildingId, roomId, BookingStatus.CANCELLED);
             if (!bookings.isEmpty()) {
                 // loop each booking in day
                 for (OrderBooking orderBooking : bookings) {
@@ -317,7 +317,7 @@ public class OrderBookingService implements IOrderBookingService {
         transaction.setType("pay for Order");
         transaction.setTransaction_time(LocalDateTime.now());
         transaction.setPayment(payment);
-        payment.setTransactionId(transaction.getTransactionId());
+       // payment.setTransactionId(transaction.getTransactionId());
         paymentRepository.save(payment);
         transactionRepository.save(transaction);
         // Trừ tiền trong ví
@@ -558,13 +558,10 @@ public class OrderBookingService implements IOrderBookingService {
             throw new RuntimeException("Booking cannot be canceled");
         }
 
-        LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
-        long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
-        System.out.println("hours:" + hours);
-        System.out.println("now" + LocalDateTime.now());
-        if (hours > 24) {
-            System.out.println("numberDays:" + hours);
-            // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate createDate = LocalDate.parse(orderBooking.getCreateAt().substring(0, 10), formatter);
+        // nếu đặt trong ngày -> huỷ
+        if (createDate.equals(LocalDate.parse(orderBooking.getCheckinDate()))) {
             orderBooking.setStatus(BookingStatus.CANCELLED);
             orderBookingRepository.save(orderBooking);
 
@@ -590,7 +587,40 @@ public class OrderBookingService implements IOrderBookingService {
                 payment.setStatus("completed");
                 paymentRepository.save(payment);
             }
-        } else if (hours < 24 && hours > 6) {
+        } else {
+            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
+            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
+            System.out.println("hours:" + hours);
+            System.out.println("now" + LocalDateTime.now());
+            if (hours > 24) {
+                System.out.println("numberDays:" + hours);
+                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
+                orderBooking.setStatus(BookingStatus.CANCELLED);
+                orderBookingRepository.save(orderBooking);
+
+                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+
+                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+                if (payment.getStatus().equals("completed")) {
+                    // Hoàn lại tiền vào ví
+                    wallet.setAmount(wallet.getAmount() + payment.getAmount());
+                    walletRepository.save(wallet);
+
+                    Transaction refundTransaction = new Transaction();
+                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
+                    refundTransaction.setAmount(payment.getAmount());
+                    refundTransaction.setStatus("completed");
+                    refundTransaction.setType("refund");
+                    refundTransaction.setTransaction_time(LocalDateTime.now());
+                    refundTransaction.setPayment(payment);
+                    transactionRepository.save(refundTransaction);
+                    payment.setStatus("completed");
+                    paymentRepository.save(payment);
+                }
+            } else if (hours < 24 && hours > 6) {
                 // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
@@ -617,10 +647,13 @@ public class OrderBookingService implements IOrderBookingService {
                     payment.setStatus("completed");
                     paymentRepository.save(payment);
                 }
-            }else{
+            } else {
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
             }
         }
+
+
     }
+}
 

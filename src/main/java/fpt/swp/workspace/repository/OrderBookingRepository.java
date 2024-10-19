@@ -1,5 +1,6 @@
 package fpt.swp.workspace.repository;
 
+import fpt.swp.workspace.models.BookingStatus;
 import fpt.swp.workspace.models.OrderBooking;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +25,12 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
     @Query("SELECT b FROM OrderBooking b WHERE  b.checkinDate <= ?1 AND b.checkoutDate >= ?1 ")
     List<OrderBooking> findBookingsByDate(String booking);
 
-    @Query("SELECT b FROM OrderBooking b WHERE  (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) AND b.building.buildingId = ?2 AND b.room.roomId = ?3 ")
-    List<OrderBooking> findBookingsByDate(String booking, String buildingId, String roomId );
+    @Query("SELECT b FROM OrderBooking b " +
+            "WHERE (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) " +
+                    "AND b.building.buildingId = ?2 " +
+                    "AND b.room.roomId = ?3 " +
+                    "AND b.status != ?4 ")
+    List<OrderBooking> findBookingsByDate(String booking, String buildingId, String roomId, BookingStatus status );
 
 
     @Query("SELECT b FROM OrderBooking b WHERE  b.checkinDate <= :checkout AND b.checkoutDate >= :checkin ")
