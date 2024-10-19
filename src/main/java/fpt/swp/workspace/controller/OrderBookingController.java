@@ -237,7 +237,7 @@ public class OrderBookingController {
         System.out.println(jwtToken);
         try {
              orderBookingService.cancelOrderBooking(jwtToken, bookingId);
-             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK);
+             return ResponseHandler.responseBuilder("Đã huỷ thành công", HttpStatus.OK);
         } catch (Exception e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

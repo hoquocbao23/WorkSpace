@@ -48,6 +48,8 @@ public class StaffService {
 
     @Autowired
     private JWTService jwtService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     public AuthenticationResponse createStaff(StaffRequest request) {
         AuthenticationResponse response = new AuthenticationResponse();
@@ -218,6 +220,8 @@ public class StaffService {
 //        return new RoomStatusResponse(room.getRoomId(), room.getStatus());
 //    }
 
+
+
     public OrderStatusResponse updateOrderStatus(String bookingId, UpdateOrderBookingStatusRequest request) {
         OrderBooking order = orderBookingRepository.findByOrderId(bookingId)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + bookingId));
@@ -278,6 +282,88 @@ public class StaffService {
             orderBookingDetailDTOList.add(dto);
         }
         return orderBookingDetailDTOList;
+    }
+
+    public List<OrderBookingDetailDTO> checkinByEmail(String date, String email) {
+        Customer customer = customerRepository.findCustomerByEmail(email);
+        if (customer == null) {
+            throw new NullPointerException("Không tìm thấy khách hàng");
+        }
+        List<OrderBooking> orderBookingList = orderBookingRepository.getCustomerOrderByEmailAndDate(date, email);
+        if (orderBookingList.isEmpty()) {
+            throw new NullPointerException( date + " khách hàng " + email + " chưa có booking nào.");
+        }
+        List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
+
+        for (OrderBooking orderBooking : orderBookingList) {
+            OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
+            dto.setBookingId(orderBooking.getBookingId());
+            dto.setCustomerId(orderBooking.getCustomer().getUserId());
+            dto.setRoomId(orderBooking.getRoom().getRoomId());
+            dto.setTotalPrice(orderBooking.getTotalPrice());
+            dto.setSlots(orderBooking.getSlot());
+            dto.setStatus(orderBooking.getStatus());
+            dto.setCheckinDate(orderBooking.getCheckinDate());
+            dto.setCheckoutDate(orderBooking.getCheckoutDate());
+
+            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
+            Map<String, Integer> serviceList = new HashMap<>();
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
+                String serviceName = bookingDetail.getService().getServiceName();
+                int quantity = bookingDetail.getBookingServiceQuantity();
+                serviceList.put(serviceName, quantity);
+            }
+            dto.setServiceItems(serviceList);
+            orderBookingDetailDTOList.add(dto);
+        }
+        return orderBookingDetailDTOList;
+    }
+
+    public List<OrderBookingDetailDTO> checkinByPhonenumber(String date, String phonenumber) {
+        Customer customer = customerRepository.findCustomerByPhoneNumber(phonenumber);
+        if (customer == null) {
+            throw new NullPointerException("Không tìm thấy khách hàng");
+        }
+        List<OrderBooking> orderBookingList = orderBookingRepository.getCustomerOrderByPhoneAndDate(date, phonenumber);
+        if (orderBookingList.isEmpty()) {
+            throw new NullPointerException( date + " khách hàng " + phonenumber + " chưa có booking nào.");
+        }
+        List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
+
+        for (OrderBooking orderBooking : orderBookingList) {
+            OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
+            dto.setBookingId(orderBooking.getBookingId());
+            dto.setCustomerId(orderBooking.getCustomer().getUserId());
+            dto.setRoomId(orderBooking.getRoom().getRoomId());
+            dto.setTotalPrice(orderBooking.getTotalPrice());
+            dto.setSlots(orderBooking.getSlot());
+            dto.setStatus(orderBooking.getStatus());
+            dto.setCheckinDate(orderBooking.getCheckinDate());
+            dto.setCheckoutDate(orderBooking.getCheckoutDate());
+
+            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
+            Map<String, Integer> serviceList = new HashMap<>();
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
+                String serviceName = bookingDetail.getService().getServiceName();
+                int quantity = bookingDetail.getBookingServiceQuantity();
+                serviceList.put(serviceName, quantity);
+            }
+            dto.setServiceItems(serviceList);
+            orderBookingDetailDTOList.add(dto);
+        }
+        return orderBookingDetailDTOList;
+    }
+
+    public void updateOrderStatus(String bookingId, BookingStatus status) {
+        OrderBooking order = orderBookingRepository.findByOrderId(bookingId).orElseThrow(() -> new RuntimeException("Booking không hợp lệ"));
+        if (order.getStatus() == BookingStatus.CANCELLED) {
+            throw new RuntimeException("Booking " + bookingId + " đã bị huỷ.");
+        }
+        if (order.getStatus() == status){
+            throw new RuntimeException("Trạng thái đã được đặt");
+        }
+        order.setStatus(status);
+        orderBookingRepository.save(order);
     }
 
 

@@ -167,7 +167,6 @@ public class VNPAYService {
                 payment.setAmount((int) amount);
                 payment.setStatus("completed");
                 payment.setPaymentMethod("VNPay");
-                payment.setTransactionId(transactionId);
                 payment.setCustomer(customer);
                 paymentRepository.save(payment);
 
@@ -183,13 +182,13 @@ public class VNPAYService {
                 response.put("message", "Top-up successful");
                 response.put("amountTopUp", amount);
                 response.put("currentWalletBalance", currentWalletBalance);
-                restResponse.sendRedirect("http://localhost:3000/");
+                restResponse.sendRedirect("http://localhost:3000/settings/transaction-history");
                 return ResponseEntity.ok(response);
             } else {
                 response.put("message", "Transaction failed");
                 response.put("amountTopUp", 0);
                 response.put("currentWalletBalance", currentWalletBalance);
-                restResponse.sendRedirect("http://localhost:3000/");
+                restResponse.sendRedirect("http://localhost:3000/settings/transaction-history");
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
             }
         } else {
