@@ -366,5 +366,19 @@ public class StaffService {
         orderBookingRepository.save(order);
     }
 
+    public void updateOrderStatus(String bookingId, String status) {
+        OrderBooking order = orderBookingRepository.findByOrderId(bookingId).orElseThrow(() -> new RuntimeException("Booking không hợp lệ"));
+        if (order.getStatus() == BookingStatus.CANCELLED) {
+            throw new RuntimeException("Booking " + bookingId + " đã bị huỷ.");
+        }
+        // convert String -> Enum
+        if ( order.getStatus() == BookingStatus.valueOf(status)) {
+            throw new RuntimeException("Trạng thái đã được đặt");
+        }
+        // convert String -> Enum
+        order.setStatus(BookingStatus.valueOf(status));
+        orderBookingRepository.save(order);
+    }
+
 
 }
