@@ -232,9 +232,9 @@ public class OrderBookingService implements IOrderBookingService {
                 discount = 0.05f;
             }
         }
-        Building building = buildingRepository.findById(buildingId).get();
+        Building building = buildingRepository.findById(buildingId).orElseThrow(() -> new NullPointerException("Building not found"));
 
-        Room room = roomRepository.findById(roomId).get();
+        Room room = roomRepository.findById(roomId).orElseThrow(() -> new NullPointerException("Room not found"));
 
 
         // get time slot booked by customer
