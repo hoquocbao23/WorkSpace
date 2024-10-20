@@ -164,7 +164,7 @@ public class StaffController {
     }
 
     @PutMapping("/update-booking-status")
-        public ResponseEntity<Object> updateOrderStatus(@RequestParam("bookingId") String bookingId, @RequestParam("status") BookingStatus status) {
+        public ResponseEntity<Object> updateOrderStatus(@RequestParam("bookingId") String bookingId, @RequestParam("status") String status) {
         try {
              staffService.updateOrderStatus(bookingId, status);
             return ResponseHandler.responseBuilder("Cập nhập thành công", HttpStatus.OK);

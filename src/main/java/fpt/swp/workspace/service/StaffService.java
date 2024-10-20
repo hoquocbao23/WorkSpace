@@ -379,6 +379,4 @@ public class StaffService {
         order.setStatus(BookingStatus.valueOf(status));
         orderBookingRepository.save(order);
     }
-
-
 }
