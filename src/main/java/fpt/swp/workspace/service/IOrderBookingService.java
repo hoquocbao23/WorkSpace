@@ -3,6 +3,7 @@ package fpt.swp.workspace.service;
 import fpt.swp.workspace.DTO.BookedSlotDTO;
 import fpt.swp.workspace.DTO.CustomerServiceDTO;
 import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.models.BookingStatus;
 import fpt.swp.workspace.models.OrderBooking;
 import org.springframework.util.MultiValueMap;
 
@@ -33,6 +34,8 @@ public interface IOrderBookingService {
     CustomerServiceDTO getCustomerService(String orderBookingId);
 
     void cancelOrderBooking(String jwttoken, String orderBookingId);
+
+    List<OrderBookingDetailDTO> getPendingBooking();
 
 
 

@@ -29,6 +29,15 @@ public class StaffService {
     private StaffRepository staffRepository;
 
     @Autowired
+    private WalletRepository walletRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
     private OrderBookingDetailRepository orderBookingDetailRepository;
 
     @Autowired
@@ -48,6 +57,7 @@ public class StaffService {
 
     @Autowired
     private JWTService jwtService;
+
     @Autowired
     private CustomerRepository customerRepository;
 
@@ -378,5 +388,40 @@ public class StaffService {
         // convert String -> Enum
         order.setStatus(BookingStatus.valueOf(status));
         orderBookingRepository.save(order);
+    }
+
+    public void acceptPendingBooking(String bookingId){
+        OrderBooking orderBooking = orderBookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking " + bookingId + " không có trong danh sách chờ! "));
+        orderBooking.setStatus(BookingStatus.UPCOMING);
+        orderBookingRepository.save(orderBooking);
+    }
+
+    public void rejectPendingBooking(String bookingId) {
+        OrderBooking orderBooking = orderBookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking " + bookingId + " không có trong danh sách chờ! "));
+        orderBooking.setStatus(BookingStatus.CANCELLED);
+        orderBookingRepository.save(orderBooking);
+
+        Payment payment = paymentRepository.findByOrderBookingId(bookingId)
+                .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+
+        Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+        if (payment.getStatus().equals("completed")) {
+            // Hoàn lại tiền vào ví
+            wallet.setAmount(wallet.getAmount() + payment.getAmount());
+            walletRepository.save(wallet);
+
+            Transaction refundTransaction = new Transaction();
+            refundTransaction.setTransactionId(UUID.randomUUID().toString());
+            refundTransaction.setAmount(payment.getAmount());
+            refundTransaction.setStatus("completed");
+            refundTransaction.setType("refund");
+            refundTransaction.setTransaction_time(LocalDateTime.now());
+            refundTransaction.setPayment(payment);
+            transactionRepository.save(refundTransaction);
+            payment.setStatus("completed");
+            paymentRepository.save(payment);
+        }
     }
 }
