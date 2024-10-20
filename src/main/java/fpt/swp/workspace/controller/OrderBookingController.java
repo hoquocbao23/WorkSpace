@@ -116,7 +116,7 @@ public class OrderBookingController {
                                                      @RequestParam(required = false) MultiValueMap<String, String> items,
                                                      @RequestParam(value = "note", required = false) String note) {
         String jwtToken = token.substring(7);
-        System.out.println(jwtToken);
+
         MultiValueMap<Integer, Integer> convertedItems = new LinkedMultiValueMap<>();
 
         // Chuyển đổi từ MultiValueMap<String, String> sang MultiValueMap<Integer, Integer>
@@ -132,9 +132,13 @@ public class OrderBookingController {
                 }
             }
         }
+        try{
+            OrderBooking bookingResponse = orderBookingService.createMultiOrderBooking(jwtToken, buildingId, roomId, checkInDate, checkoutDate, slots, convertedItems, note);
+            return ResponseHandler.responseBuilder("ok", HttpStatus.CREATED, bookingResponse);
+        }catch (RuntimeException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
 
-        OrderBooking bookingResponse = orderBookingService.createMultiOrderBooking(jwtToken, buildingId, roomId, checkInDate, checkoutDate, slots, convertedItems, note);
-        return ResponseHandler.responseBuilder("ok", HttpStatus.CREATED, bookingResponse);
     }
 
     @GetMapping("/customer/history-booking")

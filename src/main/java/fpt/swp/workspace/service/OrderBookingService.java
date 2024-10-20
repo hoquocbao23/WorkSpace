@@ -293,8 +293,13 @@ public class OrderBookingService implements IOrderBookingService {
         // Áp dụng giảm giá dựa trên loại membership
         totalPriceWithServices -= totalPriceWithServices * discount;
 
+        //process if bill > 5000000
+        if (totalPriceWithServices >= 5000000) {
+            orderBooking.setStatus(BookingStatus.PENDING);
+        }
+
         orderBooking.setTotalPrice(totalPriceWithServices);
-        orderBookingRepository.save(orderBooking);
+        result = orderBookingRepository.save(orderBooking);
         Wallet wallet = walletRepository.findByUserId(customer.getUserId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         if (wallet.getAmount() < totalPriceWithServices) {
@@ -317,12 +322,14 @@ public class OrderBookingService implements IOrderBookingService {
         transaction.setType("pay for Order");
         transaction.setTransaction_time(LocalDateTime.now());
         transaction.setPayment(payment);
-       // payment.setTransactionId(transaction.getTransactionId());
+        // payment.setTransactionId(transaction.getTransactionId());
         paymentRepository.save(payment);
         transactionRepository.save(transaction);
         // Trừ tiền trong ví
         wallet.setAmount(wallet.getAmount() - totalPriceWithServices);
         walletRepository.save(wallet);
+
+
         return result;
     }
 
@@ -593,7 +600,6 @@ public class OrderBookingService implements IOrderBookingService {
             System.out.println("hours:" + hours);
             System.out.println("now" + LocalDateTime.now());
             if (hours > 24) {
-                System.out.println("numberDays:" + hours);
                 // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
@@ -653,6 +659,39 @@ public class OrderBookingService implements IOrderBookingService {
             }
         }
 
+
+    }
+
+    @Override
+    public List<OrderBookingDetailDTO> getPendingBooking() {
+        List<OrderBooking> pendingList = orderBookingRepository.findByStatus(BookingStatus.PENDING);
+        if (pendingList.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
+
+        for (OrderBooking pending : pendingList) {
+            OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
+            dto.setBookingId(pending.getBookingId());
+            dto.setCustomerId(pending.getCustomer().getUserId());
+            dto.setRoomId(pending.getRoom().getRoomId());
+            dto.setTotalPrice(pending.getTotalPrice());
+            dto.setSlots(pending.getSlot());
+            dto.setStatus(pending.getStatus());
+            dto.setCheckinDate(pending.getCheckinDate());
+            dto.setCheckoutDate(pending.getCheckoutDate());
+
+            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(pending.getBookingId());
+            Map<String, Integer> serviceList = new HashMap<>();
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
+                String serviceName = bookingDetail.getService().getServiceName();
+                int quantity = bookingDetail.getBookingServiceQuantity();
+                serviceList.put(serviceName, quantity);
+            }
+            dto.setServiceItems(serviceList);
+            orderBookingDetailDTOList.add(dto);
+        }
+        return orderBookingDetailDTOList;
 
     }
 }

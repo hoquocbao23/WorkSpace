@@ -6,6 +6,7 @@ import fpt.swp.workspace.auth.AuthenticationResponse;
 import fpt.swp.workspace.models.BookingStatus;
 import fpt.swp.workspace.models.Staff;
 import fpt.swp.workspace.response.*;
+import fpt.swp.workspace.service.OrderBookingService;
 import fpt.swp.workspace.service.RoomService;
 import fpt.swp.workspace.service.StaffService;
 import jakarta.validation.Valid;
@@ -25,6 +26,8 @@ public class StaffController {
     private StaffService staffService;
     @Autowired
     private RoomService roomService;
+    @Autowired
+    private OrderBookingService orderBookingService;
 
     @PostMapping()
     public ResponseEntity<AuthenticationResponse> createStaff(@Valid @RequestBody StaffRequest request) {
@@ -173,6 +176,34 @@ public class StaffController {
         }
     }
 
+    @GetMapping("/get-pending-booking")
+    public ResponseEntity<Object> getPendingBooking() {
+        try {
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, orderBookingService.getPendingBooking());
+        } catch (RuntimeException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
+    @PutMapping("/accept-pending-booking")
+        public ResponseEntity<Object> acceptPendingBooking(@RequestParam("bookingId") String bookingId) {
+        try {
+            staffService.acceptPendingBooking(bookingId);
+            return ResponseHandler.responseBuilder("Chấp nhận booking", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/reject-pending-booking")
+    public ResponseEntity<Object> rejectPendingBooking(@RequestParam("bookingId") String bookingId) {
+        try {
+            staffService.rejectPendingBooking(bookingId);
+            return ResponseHandler.responseBuilder("Đã từ chối booking", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
 }
+

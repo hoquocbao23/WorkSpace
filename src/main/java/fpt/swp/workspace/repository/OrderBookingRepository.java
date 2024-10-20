@@ -51,4 +51,6 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
 
     @Query("SELECT b FROM OrderBooking b WHERE b.bookingId = ?1")
     Optional<OrderBooking> findByOrderId(String bookingId);
+
+    List<OrderBooking> findByStatus(BookingStatus status);
 }
