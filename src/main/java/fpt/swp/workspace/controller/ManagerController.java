@@ -4,6 +4,7 @@ package fpt.swp.workspace.controller;
 import fpt.swp.workspace.models.Manager;
 import fpt.swp.workspace.response.APIResponse;
 import fpt.swp.workspace.response.ManagerRequest;
+import fpt.swp.workspace.response.ResponseHandler;
 import fpt.swp.workspace.service.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,17 +18,17 @@ public class ManagerController {
     @Autowired
     private ManagerService managerService;
 
-    @PostMapping()
-    public ResponseEntity<APIResponse<Manager>> createManager(@RequestBody ManagerRequest request) {
-        try {
-            Manager createManager = managerService.createManager(request);
-            APIResponse<Manager> response = new APIResponse<>("Manager create successfully", createManager);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (RuntimeException e) {
-            APIResponse<Manager> response = new APIResponse<>(e.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-        }
-    }
+//    @PostMapping()
+//    public ResponseEntity<APIResponse<Manager>> createManager(@RequestBody ManagerRequest request) {
+//        try {
+//            Manager createManager = managerService.createManager(request);
+//            APIResponse<Manager> response = new APIResponse<>("Manager create successfully", createManager);
+//            return ResponseEntity.status(HttpStatus.OK).body(response);
+//        } catch (RuntimeException e) {
+//            APIResponse<Manager> response = new APIResponse<>(e.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//        }
+//    }
 
     @GetMapping
     public Page<Manager> getAllManagers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
@@ -51,15 +52,25 @@ public class ManagerController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteManager(@PathVariable String id) {
-        try {
-            managerService.deleteManager(id);
-            APIResponse<Void> response = new APIResponse<>("Manager deleted successfully", null);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-        } catch (RuntimeException e) {
-            APIResponse<Void> response = new APIResponse<>(e.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<APIResponse<Void>> deleteManager(@PathVariable String id) {
+//        try {
+//            managerService.deleteManager(id);
+//            APIResponse<Void> response = new APIResponse<>("Manager deleted successfully", null);
+//            return ResponseEntity.status(HttpStatus.OK).body(response);
+//        } catch (RuntimeException e) {
+//            APIResponse<Void> response = new APIResponse<>(e.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//        }
+//    }
+
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<Object> updateManagerStatus(@PathVariable("id") String id) {
+        try{
+            managerService.updateManageStatus(id);
+            return ResponseHandler.responseBuilder("Cập nhập thành công", HttpStatus.OK);
+        }catch (RuntimeException e ) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 }

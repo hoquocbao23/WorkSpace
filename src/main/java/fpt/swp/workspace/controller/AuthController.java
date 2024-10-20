@@ -4,6 +4,7 @@ import fpt.swp.workspace.auth.AuthenticationResponse;
 import fpt.swp.workspace.auth.LoginRequest;
 import fpt.swp.workspace.auth.RegisterRequest;
 
+import fpt.swp.workspace.response.ResponseHandler;
 import fpt.swp.workspace.service.IAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -26,8 +27,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
         return ResponseEntity.ok(response);
-
-
     }
 
     @PostMapping("/auth/login")
@@ -51,6 +50,20 @@ public class AuthController {
     @PostMapping("/auth/log-out")
     public ResponseEntity<AuthenticationResponse> logout(){
         return ResponseEntity.status(HttpStatus.OK).body(service.logout());
+    }
+
+    @PostMapping("/owner/create-account")
+    public ResponseEntity<Object> createAccount(@RequestParam("userName") String userName,
+                                                                @RequestParam("password") String password,
+                                                                @RequestParam("role") String role,
+                                                                @RequestParam("buildingId") String buildingId){
+        try {
+            AuthenticationResponse response = service.createAccount(userName, password, role, buildingId);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
 

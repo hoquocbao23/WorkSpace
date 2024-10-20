@@ -162,13 +162,11 @@ public class StaffService {
         return staffRepository.save(existedStaff);
     }
 
-    public void deleteStaff(String userId) {
-        Optional<Staff> staffOptional = staffRepository.findById(userId);
-        if (staffOptional.isPresent()) {
-            staffRepository.deleteById(userId);
-        } else {
-            throw new EntityNotFoundException("Staff with ID " + userId + " not found.");
-        }    }
+    public void updateStaffStatus(String staffId) {
+        Staff staff = staffRepository.findById(staffId).orElseThrow(() -> new RuntimeException("Staff không tồn tại"));
+        staff.setStatus(UserStatus.DISABLED);
+        staffRepository.save(staff);
+    }
 
 
     public String generateStaffId() {

@@ -34,7 +34,7 @@ public class Staff {
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "create_at", nullable = false)
+    @Column(name = "create_at")
     private LocalDateTime createAt;
 
     @Column(name = "email", length = 45)
@@ -50,9 +50,12 @@ public class Staff {
     private String buildingId;
 
 
+    private String roleName;
+
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private StaffStatus status = StaffStatus.active;
+    private UserStatus status = UserStatus.AVAIABLE;
 
     @ManyToMany(mappedBy = "staff")
     @JsonIgnore

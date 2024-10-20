@@ -34,13 +34,18 @@ INSERT INTO timeslot(time_slot_id, status, time_start, time_end) VALUES (3, 'AVA
 INSERT INTO timeslot(time_slot_id, status, time_start, time_end) VALUES (4, 'AVAILABLE', '19:00:00.000000', '22:00:00.000000');
 
 -- USER --
-INSERT INTO user (user_id, password, role_name, username) VALUES ('OWN005', '$2a$10$923vpnosP9l1xDmLPXXph.3h5H4mUWmgSKSbXiEalfplWwpuyCraC', 'OWNER', 'owner1s' );
-INSERT INTO user (user_id, password, role_name, username) VALUES ('MA005', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'MANAGER', 'ma01' );
+INSERT INTO user (user_id, password, role_name, username) VALUES ('OWN001', '$2a$10$923vpnosP9l1xDmLPXXph.3h5H4mUWmgSKSbXiEalfplWwpuyCraC', 'OWNER', 'owner1s' );
+INSERT INTO user (user_id, password, role_name, username) VALUES ('MA001', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'MANAGER', 'ma01' );
 INSERT INTO user (user_id, password, role_name, username) VALUES ('ST01', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'STAFF', 'st01' );
 INSERT INTO user (user_id, password, role_name, username) VALUES ('ST02', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'STAFF', 'st02' );
 
 -- STAFF --
-INSERT INTO staff (create_at, date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status)
-VALUES ('2024-10-13', '1990-05-20', '0123456789', 'Morning', 'example@example.com', 'John Doe', 'Mon,Tue,Wed', 'BD001', 'ST01', 'Active');
-INSERT INTO staff (create_at, date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status)
-VALUES ('2024-10-13', '1990-05-20', '0123456789', 'Morning', 'example@example.com', 'Marry', 'Mon,Tue,Wed', 'BD001', 'ST02', 'Active');
+INSERT INTO staff ( date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status, role_name)
+VALUES ( '1990-05-20', '0123456789', 'Morning', 'example@example.com', 'John Doe', 'Mon,Tue,Wed', 'BD001', 'ST01', 'AVAIABLE','STAFF');
+INSERT INTO staff ( date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status, role_name)
+VALUES ('1990-05-20', '0123456789', 'Morning', 'example@example.com', 'Marry', 'Mon,Tue,Wed', 'BD001', 'ST02', 'AVAIABLE', 'STAFF');
+
+-- MANAGER --
+INSERT INTO manager ( date_of_birth, phone_number, role_name, email, full_name, building_id, user_id)
+VALUES ('1990-01-01', '0123456789', 'MANAGER', 'example@example.com', 'John Doe', 'BD001', 'MA001');
+
