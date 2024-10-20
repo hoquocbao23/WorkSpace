@@ -49,7 +49,7 @@ public class StaffController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<APIResponse<Staff>> updateManager(@PathVariable String id,@RequestBody UpdateStaffRequest request) {
+    public ResponseEntity<APIResponse<Staff>> updateStaff(@PathVariable String id, @RequestBody UpdateStaffRequest request) {
         try {
             Staff updateStaff = staffService.updateStaff(id, request);
             APIResponse<Staff> response = new APIResponse<>("Staff updated successfully", updateStaff);
@@ -60,15 +60,24 @@ public class StaffController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteStaff(@PathVariable String id) {
+    //    @DeleteMapping("/{id}")
+//    public ResponseEntity<APIResponse<Void>> deleteStaff(@PathVariable String id) {
+//        try {
+//            staffService.deleteStaff(id);
+//            APIResponse<Void> response = new APIResponse<>("Staff deleted successfully", null);
+//            return ResponseEntity.status(HttpStatus.OK).body(response);
+//        } catch (RuntimeException e) {
+//            APIResponse<Void> response = new APIResponse<>(e.getMessage(), null);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+//        }
+//    }
+    @PutMapping("/delete/{id}")
+    public ResponseEntity<Object> updateStaffStatus(@PathVariable String id) {
         try {
-            staffService.deleteStaff(id);
-            APIResponse<Void> response = new APIResponse<>("Staff deleted successfully", null);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
+            staffService.updateStaffStatus(id);
+            return ResponseHandler.responseBuilder("Cập nhập thành công", HttpStatus.OK);
         } catch (RuntimeException e) {
-            APIResponse<Void> response = new APIResponse<>(e.getMessage(), null);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
@@ -107,7 +116,7 @@ public class StaffController {
 
     @PutMapping("room-status/{roomId}")
     public ResponseEntity<Object> updateRoomStatus(@PathVariable String roomId,
-                                           @RequestParam("status") String status) {
+                                                   @RequestParam("status") String status) {
         try {
             roomService.updateRoomStatus(roomId, status);
             return ResponseHandler.responseBuilder("Room status updated successfully", HttpStatus.OK);
@@ -132,9 +141,9 @@ public class StaffController {
     public ResponseEntity<Object> getRoomsAssigned(@RequestHeader("Authorization") String token) {
         String jwtToken = token.substring(7);
         List<RoomDTO> listRoomAssign = staffService.getRoomsAssigned(jwtToken);
-        try{
+        try {
             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, listRoomAssign);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -143,7 +152,7 @@ public class StaffController {
     public ResponseEntity<Object> getAllOrderBooking() {
         try {
             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getOrderBookingDetails());
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -152,7 +161,7 @@ public class StaffController {
     public ResponseEntity<Object> getCustomerOrderBookingByEmail(@RequestParam("date") String date, @RequestParam("email") String email) {
         try {
             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.checkinByEmail(date, email));
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
@@ -161,15 +170,15 @@ public class StaffController {
     public ResponseEntity<Object> getCustomerOrderBookingByPhone(@RequestParam("date") String date, @RequestParam("phonenumber") String phonenumber) {
         try {
             return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.checkinByPhonenumber(date, phonenumber));
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping("/update-booking-status")
-        public ResponseEntity<Object> updateOrderStatus(@RequestParam("bookingId") String bookingId, @RequestParam("status") String status) {
+    public ResponseEntity<Object> updateOrderStatus(@RequestParam("bookingId") String bookingId, @RequestParam("status") String status) {
         try {
-             staffService.updateOrderStatus(bookingId, status);
+            staffService.updateOrderStatus(bookingId, status);
             return ResponseHandler.responseBuilder("Cập nhập thành công", HttpStatus.OK);
         } catch (RuntimeException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -186,7 +195,7 @@ public class StaffController {
     }
 
     @PutMapping("/accept-pending-booking")
-        public ResponseEntity<Object> acceptPendingBooking(@RequestParam("bookingId") String bookingId) {
+    public ResponseEntity<Object> acceptPendingBooking(@RequestParam("bookingId") String bookingId) {
         try {
             staffService.acceptPendingBooking(bookingId);
             return ResponseHandler.responseBuilder("Chấp nhận booking", HttpStatus.OK);

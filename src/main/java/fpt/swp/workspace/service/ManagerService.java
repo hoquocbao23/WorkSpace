@@ -1,6 +1,7 @@
 package fpt.swp.workspace.service;
 
 import fpt.swp.workspace.models.Manager;
+import fpt.swp.workspace.models.UserStatus;
 import fpt.swp.workspace.repository.BuildingRepository;
 import fpt.swp.workspace.repository.ManagerRepository;
 import fpt.swp.workspace.repository.UserRepo;
@@ -24,29 +25,29 @@ public class ManagerService {
     @Autowired
     private BuildingRepository buildingRepository;
 
-    public Manager createManager(ManagerRequest request) {
-        boolean buildingExists = buildingRepository.existsById(request.getBuildingId());
-        if (!buildingExists) {
-            throw new RuntimeException("Building not found");
-        }
-
-        boolean userExists = userRepository.existsById(request.getUserId());
-        if (!userExists) {
-            throw new RuntimeException("User not found");
-        }
-        Manager manager = new Manager();
-        manager.setManagerId(request.getUserId());
-        manager.setEmail(request.getEmail());
-        manager.setFullName(request.getFullName());
-        manager.setPhoneNumber(request.getPhoneNumber());
-        manager.setDateOfBirth(request.getDateOfBirth());
-        manager.setRoleName("MANAGER");
-        manager.setCreateAt(LocalDateTime.now());
-        manager.setUserId(request.getUserId());
-        manager.setBuildingId(request.getBuildingId());
-        managerRepository.save(manager);
-        return manager;
-    }
+//    public Manager createManager(ManagerRequest request) {
+//        boolean buildingExists = buildingRepository.existsById(request.getBuildingId());
+//        if (!buildingExists) {
+//            throw new RuntimeException("Building not found");
+//        }
+//
+//        boolean userExists = userRepository.existsById(request.getUserId());
+//        if (!userExists) {
+//            throw new RuntimeException("User not found");
+//        }
+//        Manager manager = new Manager();
+//        //manager.setManagerId(request.getUserId());
+//        manager.setEmail(request.getEmail());
+//        manager.setFullName(request.getFullName());
+//        manager.setPhoneNumber(request.getPhoneNumber());
+//        manager.setDateOfBirth(request.getDateOfBirth());
+//        manager.setRoleName("MANAGER");
+//        manager.setCreateAt(LocalDateTime.now());
+//        manager.setUserId(request.getUserId());
+//        manager.setBuildingId(request.getBuildingId());
+//        managerRepository.save(manager);
+//        return manager;
+//    }
 
     public Page<Manager> getAllManagers(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -77,10 +78,9 @@ public class ManagerService {
         return managerRepository.save(existedManager);
     }
 
-    public void deleteManager(String managerId) {
-        if (!managerRepository.existsById(managerId)) {
-            throw new RuntimeException("Manager not found");
-        }
-        managerRepository.deleteById(managerId);
+    public void updateManageStatus(String managerId) {
+        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new RuntimeException("Manager không tồn tại"));
+        manager.setStatus(UserStatus.DISABLED);
+        managerRepository.save(manager);
     }
 }

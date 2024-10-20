@@ -1,6 +1,6 @@
 package fpt.swp.workspace.response;
 
-import fpt.swp.workspace.models.StaffStatus;
+import fpt.swp.workspace.models.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +20,5 @@ public class UpdateStaffRequest {
     private String workShift;
     private String workDays;
     private String buildingId;
-    private StaffStatus status;
+    private UserStatus status;
 }

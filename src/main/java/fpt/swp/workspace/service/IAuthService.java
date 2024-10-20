@@ -14,8 +14,12 @@ public interface IAuthService {
 
     AuthenticationResponse logout();
 
+    AuthenticationResponse createAccount(String username, String password, String role, String buldingId);
+
     String generateCustomerId();
 
 
+    String generateManagerId();
 
+    String generateStaffId();
 }

@@ -1,9 +1,7 @@
 package fpt.swp.workspace.models;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,36 +10,37 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "mangager")
+@Table(name = "manager")
 @NoArgsConstructor
 @Getter
 @Setter
 public class Manager {
     @Id
-    @Column(name = "manager_id", length = 30, nullable = false)
-    private String managerId;
+    private String userId;
+    @OneToOne
+    @MapsId // This ensures the `userId` is shared as the primary key
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JsonBackReference
+    private User user;
 
-    @Column(name = "Email", length = 50, nullable = false)
+
     private String email;
 
-    @Column(name = "full_name", length = 100, nullable = false)
+
     private String fullName;
 
-    @Column(name = "phone_number", length = 20)
+
     private String phoneNumber;
 
     @Column(name = "date_of_birth")
     private Date dateOfBirth;
 
-    @Column(name = "Create_at", nullable = false)
-    private LocalDateTime createAt;
-
-    @Column(name = "role_name", length = 45, nullable = false)
     private String roleName;
 
-    @Column(name = "building_WsID")
+    @Enumerated(EnumType.STRING)
+    private UserStatus status = UserStatus.AVAIABLE;
+
+
     private String buildingId;
 
-    @Column(name = "user_UserID")
-    private String userId;
 }
