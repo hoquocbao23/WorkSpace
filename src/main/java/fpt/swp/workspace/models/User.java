@@ -35,13 +35,19 @@ public class User implements UserDetails  {
 
     private String roleName;
 
+
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Customer customer;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Staff staff;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
-    private Customer customer;
+    private Manager manager;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

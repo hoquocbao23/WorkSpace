@@ -30,10 +30,12 @@ public class ManagerController {
 //        }
 //    }
 
-    @GetMapping
-    public Page<Manager> getAllManagers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-        return managerService.getAllManagers(page, size);
-    }
+//    @GetMapping
+//    public Page<Manager> getAllManagers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+//        return managerService.getAllManagers(page, size);
+//    }
+
+
 
     @GetMapping("/{id}")
     public Manager getManagerById(@PathVariable String id) {

@@ -43,6 +43,12 @@ public class StaffController {
         return staffService.getAllStaffs(page, size);
     }
 
+    @GetMapping("/get-managed-staff")
+    public ResponseEntity<Object> getAllStaff(@RequestHeader("Authorization")String token) {
+        String jwt = token.substring(7);
+        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getAllStaffs(jwt));
+    }
+
     @GetMapping("/{id}")
     public StaffResponse getStaffById(@PathVariable String id) {
         return staffService.getStaffById(id);

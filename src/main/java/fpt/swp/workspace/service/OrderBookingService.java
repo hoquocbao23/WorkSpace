@@ -480,6 +480,13 @@ public class OrderBookingService implements IOrderBookingService {
         float totalServicePriceChange = 0.0f;
 
         if (!items.isEmpty()) {
+            // nếu customer update trước ngày check in
+            LocalDate checkinDate = LocalDate.parse(orderBooking.getCheckinDate());
+            LocalDate updateDate = LocalDate.now();
+            long numberDays = updateDate.isBefore(checkinDate)
+                    ? ChronoUnit.DAYS.between(checkinDate, LocalDate.parse(orderBooking.getCheckoutDate())) + 1
+                    : ChronoUnit.DAYS.between(updateDate, LocalDate.parse(orderBooking.getCheckoutDate())) + 1;
+
             // Xử lý items (service id và số lượng)
             for (Map.Entry<Integer, List<Integer>> entry : items.entrySet()) {
                 Integer serviceId = entry.getKey();
@@ -489,118 +496,93 @@ public class OrderBookingService implements IOrderBookingService {
 
                 // If orderBookingDetail already exist
                 if (orderBookingDetail != null) {
-                    // update quantity in table
+
                     int oldQuantity = orderBookingDetail.getBookingServiceQuantity();
-                    orderBookingDetail.setBookingServiceQuantity(quantities);
-                    float servicePrice = orderBookingDetail.getService().getPrice() * quantities;
-                    orderBookingDetail.setBookingServicePrice(servicePrice);
-                    totalServicePriceChange += servicePrice - (orderBookingDetail.getService().getPrice() * oldQuantity);
-                    orderBookingDetailRepository.save(orderBookingDetail);
-                } else {
-                    // Add new service
-                    OrderBookingDetail neworderBookingDetail = new OrderBookingDetail();
-                    ServiceItems item = serviceItemsRepository.findById(serviceId).orElseThrow(() -> new RuntimeException("Service not found"));
-                    neworderBookingDetail.setBooking(orderBooking);
-                    neworderBookingDetail.setService(item);
-                    neworderBookingDetail.setBookingServiceQuantity(quantities);
-                    float servicePrice = item.getPrice() * quantities;
-                    neworderBookingDetail.setBookingServicePrice(servicePrice);
-                    totalServicePriceChange += servicePrice;
-                    orderBookingDetailRepository.save(neworderBookingDetail);
+                    if (updateDate.isAfter(checkinDate) && oldQuantity > quantities) {
+                        throw new RuntimeException("Cannot update already booked service");
+                    }
+                        orderBookingDetail.setBookingServiceQuantity(quantities);
+                        // giá service mới = giá service * so luong * so ngay
+                        float newServicePrice = orderBookingDetail.getService().getPrice() * quantities * numberDays;
+                        totalServicePriceChange += newServicePrice - (orderBookingDetail.getBookingServicePrice());
+                        orderBookingDetail.setBookingServicePrice(newServicePrice);
+                        orderBookingDetailRepository.save(orderBookingDetail);
+                    } else {
+                        // Add new service
+                        OrderBookingDetail neworderBookingDetail = new OrderBookingDetail();
+                        ServiceItems item = serviceItemsRepository.findById(serviceId).orElseThrow(() -> new RuntimeException("Service not found"));
+                        neworderBookingDetail.setBooking(orderBooking);
+                        neworderBookingDetail.setService(item);
+                        neworderBookingDetail.setBookingServiceQuantity(quantities);
+                        float servicePrice = item.getPrice() * quantities * numberDays;
+                        neworderBookingDetail.setBookingServicePrice(servicePrice);
+                        totalServicePriceChange += servicePrice;
+                        orderBookingDetailRepository.save(neworderBookingDetail);
+                    }
                 }
-            }
-        }
-        totalPrice += totalServicePriceChange;
-        orderBooking.setTotalPrice(totalPrice);
-        orderBookingRepository.save(orderBooking);
 
-        Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
-                .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
-        if (totalServicePriceChange > 0) {
-            if (wallet.getAmount() < totalServicePriceChange) {
-                throw new RuntimeException("Not enough money in the wallet");
-            }
-            wallet.setAmount(wallet.getAmount() - totalServicePriceChange);
-        } else if (totalServicePriceChange < 0) {
-            wallet.setAmount(wallet.getAmount() + Math.abs(totalServicePriceChange)); //Adding back
-        }
-        walletRepository.save(wallet);
-    }
+                // nếu có thay đổi thì mới update cái này
+                totalPrice += totalServicePriceChange;
+                orderBooking.setTotalPrice(totalPrice);
+                orderBookingRepository.save(orderBooking);
 
-    @Override
-    public CustomerServiceDTO getCustomerService(String orderBookingId) {
-        CustomerServiceDTO dto = new CustomerServiceDTO();
+                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
 
-        // get detail by booking id
-        List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBookingId);
-
-        Map<String, Integer> serviceList = new HashMap<>();
-        for (OrderBookingDetail bookingDetail : bookingDetails) {
-            String serviceName = bookingDetail.getService().getServiceName();
-            int quantity = bookingDetail.getBookingServiceQuantity();
-
-            // add key - value to map
-            serviceList.put(serviceName, quantity);
-            // o cam: 1
-            // may chieu: 2
-        }
-        dto.setServiceItems(serviceList);
-        return dto;
-    }
-
-    @Override
-
-    public void cancelOrderBooking(String jwttoken, String orderBookingId) {
-        String username = jwtService.extractUsername(jwttoken);
-        Customer customer = customerRepository.findCustomerByUsername(username);
-
-        OrderBooking orderBooking = orderBookingRepository.findById(orderBookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
-        if (!orderBooking.getCustomer().getUserId().equals(customer.getUserId())) {
-            throw new RuntimeException("Unauthorized access to this booking");
-        }
-
-        if (!orderBooking.getStatus().equals(BookingStatus.UPCOMING)) {
-            throw new RuntimeException("Booking cannot be canceled");
-        }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate createDate = LocalDate.parse(orderBooking.getCreateAt().substring(0, 10), formatter);
-        // nếu đặt trong ngày -> huỷ
-        if (createDate.equals(LocalDate.parse(orderBooking.getCheckinDate()))) {
-            orderBooking.setStatus(BookingStatus.CANCELLED);
-            orderBookingRepository.save(orderBooking);
-
-            Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
-                    .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
-
-            Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
-                    .orElseThrow(() -> new RuntimeException("Wallet not found"));
-
-            if (payment.getStatus().equals("completed")) {
-                // Hoàn lại tiền vào ví
-                wallet.setAmount(wallet.getAmount() + payment.getAmount());
+                if (totalServicePriceChange > 0) {
+                    if (wallet.getAmount() < totalServicePriceChange) {
+                        throw new RuntimeException("Not enough money in the wallet");
+                    }
+                    wallet.setAmount(wallet.getAmount() - totalServicePriceChange);
+                } else if (totalServicePriceChange < 0) {
+                    wallet.setAmount(wallet.getAmount() + Math.abs(totalServicePriceChange)); //Adding back
+                }
                 walletRepository.save(wallet);
-
-                Transaction refundTransaction = new Transaction();
-                refundTransaction.setTransactionId(UUID.randomUUID().toString());
-                refundTransaction.setAmount(payment.getAmount());
-                refundTransaction.setStatus("completed");
-                refundTransaction.setType("refund");
-                refundTransaction.setTransaction_time(LocalDateTime.now());
-                refundTransaction.setPayment(payment);
-                transactionRepository.save(refundTransaction);
-                payment.setStatus("completed");
-                paymentRepository.save(payment);
             }
-        } else {
-            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
-            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
-            System.out.println("hours:" + hours);
-            System.out.println("now" + LocalDateTime.now());
-            if (hours > 24) {
-                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
+        }
+
+        @Override
+        public CustomerServiceDTO getCustomerService (String orderBookingId){
+            CustomerServiceDTO dto = new CustomerServiceDTO();
+
+            // get detail by booking id
+            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBookingId);
+
+            Map<String, Integer> serviceList = new HashMap<>();
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
+                String serviceName = bookingDetail.getService().getServiceName();
+                int quantity = bookingDetail.getBookingServiceQuantity();
+
+                // add key - value to map
+                serviceList.put(serviceName, quantity);
+                // o cam: 1
+                // may chieu: 2
+            }
+            dto.setServiceItems(serviceList);
+            return dto;
+        }
+
+        @Override
+
+        public void cancelOrderBooking (String jwttoken, String orderBookingId){
+            String username = jwtService.extractUsername(jwttoken);
+            Customer customer = customerRepository.findCustomerByUsername(username);
+
+            OrderBooking orderBooking = orderBookingRepository.findById(orderBookingId)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+            if (!orderBooking.getCustomer().getUserId().equals(customer.getUserId())) {
+                throw new RuntimeException("Unauthorized access to this booking");
+            }
+
+            if (!orderBooking.getStatus().equals(BookingStatus.UPCOMING)) {
+                throw new RuntimeException("Booking cannot be canceled");
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate createDate = LocalDate.parse(orderBooking.getCreateAt().substring(0, 10), formatter);
+            // nếu đặt trong ngày -> huỷ
+            if (createDate.equals(LocalDate.parse(orderBooking.getCheckinDate()))) {
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
 
@@ -626,73 +608,105 @@ public class OrderBookingService implements IOrderBookingService {
                     payment.setStatus("completed");
                     paymentRepository.save(payment);
                 }
-            } else if (hours < 24 && hours > 6) {
-                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
-                orderBooking.setStatus(BookingStatus.CANCELLED);
-                orderBookingRepository.save(orderBooking);
-
-                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
-                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
-
-                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
-                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
-
-                if (payment.getStatus().equals("completed")) {
-                    // Hoàn lại tiền vào ví
-                    wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
-                    walletRepository.save(wallet);
-
-                    Transaction refundTransaction = new Transaction();
-                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
-                    refundTransaction.setAmount(payment.getAmount() * 0.5f);
-                    refundTransaction.setStatus("completed");
-                    refundTransaction.setType("refund");
-                    refundTransaction.setTransaction_time(LocalDateTime.now());
-                    refundTransaction.setPayment(payment);
-                    transactionRepository.save(refundTransaction);
-                    payment.setStatus("completed");
-                    paymentRepository.save(payment);
-                }
             } else {
-                orderBooking.setStatus(BookingStatus.CANCELLED);
-                orderBookingRepository.save(orderBooking);
+                LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
+                long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
+                System.out.println("hours:" + hours);
+                System.out.println("now" + LocalDateTime.now());
+                if (hours > 24) {
+                    // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
+                    orderBooking.setStatus(BookingStatus.CANCELLED);
+                    orderBookingRepository.save(orderBooking);
+
+                    Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+                            .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+
+                    Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                            .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+                    if (payment.getStatus().equals("completed")) {
+                        // Hoàn lại tiền vào ví
+                        wallet.setAmount(wallet.getAmount() + payment.getAmount());
+                        walletRepository.save(wallet);
+
+                        Transaction refundTransaction = new Transaction();
+                        refundTransaction.setTransactionId(UUID.randomUUID().toString());
+                        refundTransaction.setAmount(payment.getAmount());
+                        refundTransaction.setStatus("completed");
+                        refundTransaction.setType("refund");
+                        refundTransaction.setTransaction_time(LocalDateTime.now());
+                        refundTransaction.setPayment(payment);
+                        transactionRepository.save(refundTransaction);
+                        payment.setStatus("completed");
+                        paymentRepository.save(payment);
+                    }
+                } else if (hours < 24 && hours > 6) {
+                    // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
+                    orderBooking.setStatus(BookingStatus.CANCELLED);
+                    orderBookingRepository.save(orderBooking);
+
+                    Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+                            .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+
+                    Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                            .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+                    if (payment.getStatus().equals("completed")) {
+                        // Hoàn lại tiền vào ví
+                        wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
+                        walletRepository.save(wallet);
+
+                        Transaction refundTransaction = new Transaction();
+                        refundTransaction.setTransactionId(UUID.randomUUID().toString());
+                        refundTransaction.setAmount(payment.getAmount() * 0.5f);
+                        refundTransaction.setStatus("completed");
+                        refundTransaction.setType("refund");
+                        refundTransaction.setTransaction_time(LocalDateTime.now());
+                        refundTransaction.setPayment(payment);
+                        transactionRepository.save(refundTransaction);
+                        payment.setStatus("completed");
+                        paymentRepository.save(payment);
+                    }
+                } else {
+                    orderBooking.setStatus(BookingStatus.CANCELLED);
+                    orderBookingRepository.save(orderBooking);
+                }
             }
+
+
         }
 
-
-    }
-
-    @Override
-    public List<OrderBookingDetailDTO> getPendingBooking() {
-        List<OrderBooking> pendingList = orderBookingRepository.findByStatus(BookingStatus.PENDING);
-        if (pendingList.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
-
-        for (OrderBooking pending : pendingList) {
-            OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
-            dto.setBookingId(pending.getBookingId());
-            dto.setCustomerId(pending.getCustomer().getUserId());
-            dto.setRoomId(pending.getRoom().getRoomId());
-            dto.setTotalPrice(pending.getTotalPrice());
-            dto.setSlots(pending.getSlot());
-            dto.setStatus(pending.getStatus());
-            dto.setCheckinDate(pending.getCheckinDate());
-            dto.setCheckoutDate(pending.getCheckoutDate());
-
-            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(pending.getBookingId());
-            Map<String, Integer> serviceList = new HashMap<>();
-            for (OrderBookingDetail bookingDetail : bookingDetails) {
-                String serviceName = bookingDetail.getService().getServiceName();
-                int quantity = bookingDetail.getBookingServiceQuantity();
-                serviceList.put(serviceName, quantity);
+        @Override
+        public List<OrderBookingDetailDTO> getPendingBooking () {
+            List<OrderBooking> pendingList = orderBookingRepository.findByStatus(BookingStatus.PENDING);
+            if (pendingList.isEmpty()) {
+                return new ArrayList<>();
             }
-            dto.setServiceItems(serviceList);
-            orderBookingDetailDTOList.add(dto);
-        }
-        return orderBookingDetailDTOList;
+            List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
 
+            for (OrderBooking pending : pendingList) {
+                OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
+                dto.setBookingId(pending.getBookingId());
+                dto.setCustomerId(pending.getCustomer().getUserId());
+                dto.setRoomId(pending.getRoom().getRoomId());
+                dto.setTotalPrice(pending.getTotalPrice());
+                dto.setSlots(pending.getSlot());
+                dto.setStatus(pending.getStatus());
+                dto.setCheckinDate(pending.getCheckinDate());
+                dto.setCheckoutDate(pending.getCheckoutDate());
+
+                List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(pending.getBookingId());
+                Map<String, Integer> serviceList = new HashMap<>();
+                for (OrderBookingDetail bookingDetail : bookingDetails) {
+                    String serviceName = bookingDetail.getService().getServiceName();
+                    int quantity = bookingDetail.getBookingServiceQuantity();
+                    serviceList.put(serviceName, quantity);
+                }
+                dto.setServiceItems(serviceList);
+                orderBookingDetailDTOList.add(dto);
+            }
+            return orderBookingDetailDTOList;
+
+        }
     }
-}
 

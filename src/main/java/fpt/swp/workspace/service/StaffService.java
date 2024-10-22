@@ -29,6 +29,10 @@ public class StaffService {
     private StaffRepository staffRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+
+    @Autowired
     private WalletRepository walletRepository;
 
     @Autowired
@@ -125,6 +129,38 @@ public class StaffService {
             response.setStatus(staff.getStatus());
             return response;
         });
+    }
+
+    public List<StaffResponse> getAllStaffs(String jwt) {
+        List<StaffResponse> responses = new ArrayList<>();
+        String userName = jwtService.extractUsername(jwt);
+        String buildingId = userRepository.findByuserName(userName).getManager().getBuildingId();
+        List<Staff> list = staffRepository.findByBuildingIdAndStatus(buildingId, UserStatus.AVAIABLE);
+
+        for (Staff staff : list) {
+            StaffResponse response = new StaffResponse();
+            response.setUserId(staff.getUserId());
+            response.setFullName(staff.getFullName());
+            response.setPhoneNumber(staff.getPhoneNumber());
+            response.setEmail(staff.getEmail());
+
+            if (staff.getDateOfBirth() != null) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                response.setDateOfBirth(dateFormat.format(staff.getDateOfBirth()));
+            }
+
+            if (staff.getCreateAt() != null) {
+                response.setCreateAt(staff.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            }
+            response.setWorkShift(staff.getWorkShift());
+            response.setWorkDays(staff.getWorkDays());
+            response.setBuildingId(staff.getBuildingId());
+            response.setStatus(staff.getStatus());
+            responses.add(response);
+        }
+
+
+        return responses;
     }
 
     public StaffResponse getStaffById(String staffId) {
