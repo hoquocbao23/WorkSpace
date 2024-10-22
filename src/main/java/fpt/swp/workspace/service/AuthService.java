@@ -216,6 +216,7 @@ public class AuthService implements IAuthService {
         if (findUser != null) {
             throw new RuntimeException("Account already exists");
         }
+
         if (role.equalsIgnoreCase("MANAGER")) {
 
             newUser.setUserId(generateManagerId());

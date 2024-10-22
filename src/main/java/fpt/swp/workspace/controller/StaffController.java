@@ -38,9 +38,15 @@ public class StaffController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public Page<StaffResponse> getAllStaffs(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-        return staffService.getAllStaffs(page, size);
+//    @GetMapping
+//    public Page<StaffResponse> getAllStaffs(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+//        return staffService.getAllStaffs(page, size);
+//    }
+
+    @GetMapping("/get-staff")
+    public ResponseEntity<Object> getAllStaff(@RequestHeader("Authorization")String token) {
+        String jwt = token.substring(7);
+        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getAllStaffs(jwt));
     }
 
     @GetMapping("/{id}")
