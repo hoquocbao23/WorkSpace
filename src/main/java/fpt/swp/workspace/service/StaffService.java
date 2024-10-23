@@ -104,32 +104,32 @@ public class StaffService {
         return response;
     }
 
-    public Page<StaffResponse> getAllStaffs(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Staff> staffs = staffRepository.findAll(pageable);
-
-        return staffs.map(staff -> {
-            StaffResponse response = new StaffResponse();
-            response.setUserId(staff.getUserId());
-            response.setFullName(staff.getFullName());
-            response.setPhoneNumber(staff.getPhoneNumber());
-            response.setEmail(staff.getEmail());
-
-            if (staff.getDateOfBirth() != null) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                response.setDateOfBirth(dateFormat.format(staff.getDateOfBirth()));
-            }
-
-            if (staff.getCreateAt() != null) {
-                response.setCreateAt(staff.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            }
-            response.setWorkShift(staff.getWorkShift());
-            response.setWorkDays(staff.getWorkDays());
-            response.setBuildingId(staff.getBuildingId());
-            response.setStatus(staff.getStatus());
-            return response;
-        });
-    }
+//    public Page<StaffResponse> getAllStaffs(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<Staff> staffs = staffRepository.findAll(pageable);
+//
+//        return staffs.map(staff -> {
+//            StaffResponse response = new StaffResponse();
+//            response.setUserId(staff.getUserId());
+//            response.setFullName(staff.getFullName());
+//            response.setPhoneNumber(staff.getPhoneNumber());
+//            response.setEmail(staff.getEmail());
+//
+//            if (staff.getDateOfBirth() != null) {
+//                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//                response.setDateOfBirth(dateFormat.format(staff.getDateOfBirth()));
+//            }
+//
+//            if (staff.getCreateAt() != null) {
+//                response.setCreateAt(staff.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//            }
+//            response.setWorkShift(staff.getWorkShift());
+//            response.setWorkDays(staff.getWorkDays());
+//            response.setBuildingId(staff.getBuildingId());
+//            response.setStatus(staff.getStatus());
+//            return response;
+//        });
+//    }
 
     public List<StaffResponse> getAllStaffs(String jwt) {
         List<StaffResponse> responses = new ArrayList<>();
@@ -153,14 +153,41 @@ public class StaffService {
                 response.setCreateAt(staff.getCreateAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             }
             response.setWorkShift(staff.getWorkShift());
+            response.setStartTime(staff.getWorkShift().getStartTime().toString());
+            response.setEndTime(staff.getWorkShift().getEndTime().toString());
             response.setWorkDays(staff.getWorkDays());
+
             response.setBuildingId(staff.getBuildingId());
             response.setStatus(staff.getStatus());
             responses.add(response);
         }
-
-
         return responses;
+    }
+
+    public StaffResponse getWorkShift(String jwt){
+
+        String userName = jwtService.extractUsername(jwt);
+        Staff staff = staffRepository.findStaffByUsername(userName);
+        StaffResponse response = new StaffResponse();
+        response.setUserId(staff.getUserId());
+        response.setWorkShift(staff.getWorkShift());
+        response.setStartTime(staff.getWorkShift().getStartTime().toString());
+        response.setEndTime(staff.getWorkShift().getEndTime().toString());
+        response.setWorkDays(staff.getWorkDays());
+        return response;
+
+    }
+
+    public StaffResponse getWorkShiftByStaffId(String staffId){
+        Staff staff = staffRepository.findById(staffId).orElseThrow(() -> new NullPointerException("Không tìm thấy staff"));
+        StaffResponse response = new StaffResponse();
+        response.setUserId(staff.getUserId());
+        response.setWorkShift(staff.getWorkShift());
+        response.setStartTime(staff.getWorkShift().getStartTime().toString());
+        response.setEndTime(staff.getWorkShift().getEndTime().toString());
+        response.setWorkDays(staff.getWorkDays());
+        return response;
+
     }
 
     public StaffResponse getStaffById(String staffId) {
@@ -184,7 +211,7 @@ public class StaffService {
             existedStaff.setEmail(request.getEmail());
         }
         if(request.getWorkShift() != null){
-            existedStaff.setWorkShift(request.getWorkShift());
+            existedStaff.setWorkShift(WorkShift.valueOf(request.getWorkShift()));
         }
         if(request.getWorkDays() != null){
             existedStaff.setWorkDays(request.getWorkDays());
