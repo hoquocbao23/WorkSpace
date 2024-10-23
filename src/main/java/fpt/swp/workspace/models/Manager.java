@@ -41,7 +41,7 @@ public class Manager {
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.AVAIABLE;
 
-    @JsonIgnore
+    
     private String buildingId;
 
 }
