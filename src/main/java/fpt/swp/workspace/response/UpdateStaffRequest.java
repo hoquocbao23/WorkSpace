@@ -1,6 +1,7 @@
 package fpt.swp.workspace.response;
 
 import fpt.swp.workspace.models.UserStatus;
+import fpt.swp.workspace.models.WorkShift;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
