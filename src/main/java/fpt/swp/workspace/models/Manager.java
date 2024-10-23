@@ -1,6 +1,7 @@
 package fpt.swp.workspace.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,7 +41,7 @@ public class Manager {
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.AVAIABLE;
 
-
+    @JsonIgnore
     private String buildingId;
 
 }

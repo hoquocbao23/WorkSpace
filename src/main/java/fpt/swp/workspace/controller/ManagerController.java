@@ -39,6 +39,15 @@ public class ManagerController {
 //        return managerService.getAllManagers(page, size);
 //    }
 
+    @GetMapping
+    public ResponseEntity<Object> getAllManagers() {
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, managerService.getAllManagers());
+        }catch (RuntimeException e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 
     @GetMapping("/{id}")
