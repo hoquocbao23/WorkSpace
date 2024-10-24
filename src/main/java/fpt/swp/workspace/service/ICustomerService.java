@@ -16,4 +16,5 @@ public interface ICustomerService {
 
     Wallet getWalletByUserId(String userId);
 
+    String buyMembership(String token, String memberShipId);
 }
