@@ -216,6 +216,7 @@ public class AuthService implements IAuthService {
         if (findUser != null) {
             throw new RuntimeException("Account already exists");
         }
+
         if (role.equalsIgnoreCase("MANAGER")) {
 
             newUser.setUserId(generateManagerId());
@@ -229,6 +230,7 @@ public class AuthService implements IAuthService {
             newManager.setUser(manager);
             newManager.setRoleName(role);
             newManager.setBuildingId(buldingId);
+            newManager.setStatus(UserStatus.AVAIABLE);
             managerRepository.save(newManager);
 
         }else if (role.equalsIgnoreCase("STAFF")) {
@@ -242,6 +244,7 @@ public class AuthService implements IAuthService {
             Staff newStaff = new Staff();
             newStaff.setUser(staff);
             newStaff.setRoleName(role);
+            newStaff.setStatus(UserStatus.AVAIABLE);
             newStaff.setBuildingId(buldingId);
             staffRepository.save(newStaff);
         }

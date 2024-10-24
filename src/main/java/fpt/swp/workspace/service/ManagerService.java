@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ManagerService {
@@ -49,9 +50,18 @@ public class ManagerService {
 //        return manager;
 //    }
 
-    public Page<Manager> getAllManagers(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return managerRepository.findAll(pageable);
+//    public Page<Manager> getAllManagers(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        return managerRepository.findAll(pageable);
+//    }
+
+    public List<Manager> getAllManagers() {
+        List<Manager> managers = managerRepository.findByStatus(UserStatus.AVAIABLE);
+        if (managers.isEmpty()) {
+            throw new RuntimeException("Empty managers list");
+        }
+        return managers;
+
     }
 
     public Manager getManagerById(String managerId) {

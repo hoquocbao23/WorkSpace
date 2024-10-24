@@ -6,6 +6,7 @@ import fpt.swp.workspace.response.APIResponse;
 import fpt.swp.workspace.response.ManagerRequest;
 import fpt.swp.workspace.response.ResponseHandler;
 import fpt.swp.workspace.service.ManagerService;
+import fpt.swp.workspace.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,9 @@ import org.springframework.web.bind.annotation.*;
 public class ManagerController {
     @Autowired
     private ManagerService managerService;
+
+    @Autowired
+    private StaffService staffService;
 
 //    @PostMapping()
 //    public ResponseEntity<APIResponse<Manager>> createManager(@RequestBody ManagerRequest request) {
@@ -30,10 +34,21 @@ public class ManagerController {
 //        }
 //    }
 
+//    @GetMapping
+//    public Page<Manager> getAllManagers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+//        return managerService.getAllManagers(page, size);
+//    }
+
     @GetMapping
-    public Page<Manager> getAllManagers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-        return managerService.getAllManagers(page, size);
+    public ResponseEntity<Object> getAllManagers() {
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, managerService.getAllManagers());
+        }catch (RuntimeException e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
+
+
 
     @GetMapping("/{id}")
     public Manager getManagerById(@PathVariable String id) {
@@ -71,6 +86,15 @@ public class ManagerController {
             return ResponseHandler.responseBuilder("Cập nhập thành công", HttpStatus.OK);
         }catch (RuntimeException e ) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("get-staff-work-shift/{id}")
+    public ResponseEntity<Object> getWorkShift(@PathVariable String id) {
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getWorkShiftByStaffId(id));
+        }catch (Exception e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 }

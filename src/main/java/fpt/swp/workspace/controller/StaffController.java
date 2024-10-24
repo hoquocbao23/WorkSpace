@@ -38,9 +38,15 @@ public class StaffController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public Page<StaffResponse> getAllStaffs(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-        return staffService.getAllStaffs(page, size);
+//    @GetMapping
+//    public Page<StaffResponse> getAllStaffs(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+//        return staffService.getAllStaffs(page, size);
+//    }
+
+    @GetMapping("/get-staff")
+    public ResponseEntity<Object> getAllStaff(@RequestHeader("Authorization")String token) {
+        String jwt = token.substring(7);
+        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getAllStaffs(jwt));
     }
 
     @GetMapping("/{id}")
@@ -211,6 +217,17 @@ public class StaffController {
             return ResponseHandler.responseBuilder("Đã từ chối booking", HttpStatus.OK);
         } catch (RuntimeException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/work-shift")
+    public ResponseEntity<Object> getWorkShift(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getWorkShift(jwtToken));
+
+        }catch (Exception e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

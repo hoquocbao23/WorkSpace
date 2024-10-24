@@ -41,7 +41,8 @@ public class Staff {
     private String email;
 
     @Column(name = "work_shift", length = 30)
-    private String workShift;
+    @Enumerated(EnumType.STRING)
+    private WorkShift workShift;
 
     @Column(name = "work_days", length = 100)
     private String workDays;
