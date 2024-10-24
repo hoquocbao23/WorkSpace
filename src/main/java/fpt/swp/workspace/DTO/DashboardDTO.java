@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
 public class DashboardDTO {
     private int totalSpace;
     private int totalFreeSpace;
