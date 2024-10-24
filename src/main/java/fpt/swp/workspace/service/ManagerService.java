@@ -93,4 +93,6 @@ public class ManagerService {
         manager.setStatus(UserStatus.DISABLED);
         managerRepository.save(manager);
     }
+
+
 }
