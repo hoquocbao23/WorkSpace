@@ -28,6 +28,8 @@ public class UserNumberShip {
     @Column(name = "utilities", length = 100)
     private String utilities;
 
+    private int amount;
+
     @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
     private List<Customer> customers = new ArrayList<>();
 
