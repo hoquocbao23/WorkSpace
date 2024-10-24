@@ -2,11 +2,13 @@ package fpt.swp.workspace.repository;
 
 import fpt.swp.workspace.models.BookingStatus;
 import fpt.swp.workspace.models.OrderBooking;
+import fpt.swp.workspace.models.Room;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +35,10 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
     List<OrderBooking> findBookingsByDate(String booking, String buildingId, String roomId, BookingStatus status );
 
 
+
+
+
+
     @Query("SELECT b FROM OrderBooking b WHERE  b.checkinDate <= :checkout AND b.checkoutDate >= :checkin ")
     List<OrderBooking> findBookingsByInOutDate(@Param("checkin") String checkinDate,
                                                @Param("checkout") String checkoutDate);
@@ -53,4 +59,50 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
     Optional<OrderBooking> findByOrderId(String bookingId);
 
     List<OrderBooking> findByStatus(BookingStatus status);
+
+
+    // ----- DASHBOARD -----
+    // DATE
+    @Query("SELECT COUNT(b) FROM OrderBooking b " +
+            "WHERE (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) " +
+            "AND b.building.buildingId = ?2 " +
+            "AND b.status != ?3 ")
+    int countBookingsByDate(String booking, String buildingId, BookingStatus status );
+
+    @Query("SELECT COUNT(b) FROM OrderBooking b " +
+            "WHERE (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) " +
+            "AND b.status != ?2 ")
+    int countBookingsByDate(String booking, BookingStatus status );
+
+
+    @Query("SELECT COUNT(b) FROM OrderBooking b " +
+            "WHERE  (b.checkinDate <= :checkout AND b.checkoutDate >= :checkin ) "+
+            "AND b.building.buildingId = :buildingId " +
+            "AND b.status != :status ")
+    int countBookingManyDays(@Param("checkin") String checkinDate,
+                           @Param("checkout") String checkoutDate,
+                           @Param("buildingId") String buildingId,
+                           @Param("status") BookingStatus status);
+
+
+    @Query("SELECT COUNT(b) FROM OrderBooking b " +
+            "WHERE  (b.checkinDate <= :checkout AND b.checkoutDate >= :checkin ) "+
+            "AND b.status != :status ")
+    int countBookingManyDays(@Param("checkin") String checkinDate,
+                           @Param("checkout") String checkoutDate,
+                           @Param("status") BookingStatus status);
+
+    @Query("SELECT b FROM OrderBooking b " +
+            "WHERE (b.checkinDate <= ?1 AND b.checkoutDate >= ?1) " +
+            "AND b.building.buildingId = ?2 ")
+    List<OrderBooking> findBookingsByDate(String booking, String buildingId );
+
+    @Query("SELECT b FROM OrderBooking b WHERE  (b.checkinDate <= :checkout AND b.checkoutDate >= :checkin) AND  b.building.buildingId = :buildingId  ")
+    List<OrderBooking> findBookingManyDays(@Param("checkin") String checkinDate,
+                                               @Param("checkout") String checkoutDate,
+                                               @Param("buildingId") String buildingId);
+
+
+
+
 }

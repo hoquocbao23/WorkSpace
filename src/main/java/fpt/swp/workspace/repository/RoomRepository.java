@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+
 @Repository
 public interface RoomRepository extends JpaRepository<Room, String> {
 
@@ -27,4 +29,15 @@ public interface RoomRepository extends JpaRepository<Room, String> {
 
     @Query("SELECT r.roomId FROM Room r where r.roomId = ?1 ORDER BY r.creationTime desc ")
     boolean getRoomIdByRoomId(int roomId);
+
+
+    // ---- DASHBOARD ----
+    @Query("SELECT COUNT(r) FROM Room r WHERE r.building.buildingId = ?1")
+    int getTotalSpace(String buildingId);
+
+    @Query("SELECT COUNT(r) FROM Room r ")
+    int getTotalSpace();
+
+    @Query("SELECT r FROM Room r WHERE r.building.buildingId = ?1 ")
+    List<Room> getByRoomType(String buildingId);
 }

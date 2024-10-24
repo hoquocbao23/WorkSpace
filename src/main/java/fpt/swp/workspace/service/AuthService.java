@@ -259,4 +259,11 @@ public class AuthService implements IAuthService {
         return response;
 
     }
+
+
+    public User getUser(String token) {
+        String username = jwtService.extractUsername(token);
+        User user = repository.findByuserName(username);
+        return user;
+    }
 }
