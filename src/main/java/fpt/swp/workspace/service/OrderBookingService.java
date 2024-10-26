@@ -9,6 +9,7 @@ import fpt.swp.workspace.repository.*;
 import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
@@ -218,6 +219,7 @@ public class OrderBookingService implements IOrderBookingService {
     }
 
     @Override
+    @Transactional
     public OrderBooking createMultiOrderBooking(String jwttoken, String buildingId, String roomId, String checkin, String checkout, List<Integer> slotBooking, MultiValueMap<Integer, Integer> items, String note) {
         String username = jwtService.extractUsername(jwttoken);
         Customer customer = customerRepository.findCustomerByUsername(username);
@@ -280,7 +282,7 @@ public class OrderBookingService implements IOrderBookingService {
                 for (Integer quantity : quantities) {
                     float servicePrice = item.getPrice() * quantity * (int) numberDays;
                     OrderBookingDetail orderBookingDetail = new OrderBookingDetail();
-                    orderBookingDetail.setBooking(orderBooking);
+                    orderBookingDetail.setBooking(result);
                     orderBookingDetail.setService(item);
                     orderBookingDetail.setBookingServiceQuantity(quantity);
                     orderBookingDetail.setBookingServicePrice(servicePrice);
@@ -472,12 +474,13 @@ public class OrderBookingService implements IOrderBookingService {
 
 
     @Override
+    @Transactional
     public void updateServiceBooking(String orderBookingId, MultiValueMap<Integer, Integer> items) {
 
         // get booking
         OrderBooking orderBooking = orderBookingRepository.findById(orderBookingId).orElseThrow();
         int countSlot = orderBooking.getSlot().size();
-        float totalPrice = orderBooking.getRoom().getPrice() * countSlot;
+        float totalPrice = orderBooking.getTotalPrice();
         float totalServicePriceChange = 0.0f;
         Payment payment = paymentRepository.findByOrderBookingId(orderBooking.getBookingId()).orElseThrow();
 
@@ -523,9 +526,11 @@ public class OrderBookingService implements IOrderBookingService {
                 }
             }
 
-
+            System.out.println("Gia chenh:  " + totalServicePriceChange);
+            System.out.println("total ban đầu" + totalPrice);
             // nếu có thay đổi thì mới update cái này
             totalPrice += totalServicePriceChange;
+            System.out.println("Tong gia sau update: " + totalPrice);
             orderBooking.setTotalPrice(totalPrice);
             orderBookingRepository.save(orderBooking);
 
@@ -536,7 +541,6 @@ public class OrderBookingService implements IOrderBookingService {
                 if (wallet.getAmount() < totalServicePriceChange) {
                     throw new RuntimeException("Not enough money in the wallet");
                 }
-
                 payment.setAmount(payment.getAmount() + totalServicePriceChange);
                 wallet.setAmount(wallet.getAmount() - totalServicePriceChange);
             } else if (totalServicePriceChange < 0) {
@@ -579,7 +583,7 @@ public class OrderBookingService implements IOrderBookingService {
     }
 
     @Override
-
+    @Transactional
     public void cancelOrderBooking(String jwttoken, String orderBookingId) {
         String username = jwtService.extractUsername(jwttoken);
         Customer customer = customerRepository.findCustomerByUsername(username);
@@ -687,8 +691,6 @@ public class OrderBookingService implements IOrderBookingService {
                 orderBookingRepository.save(orderBooking);
             }
         }
-
-
     }
 
     @Override
