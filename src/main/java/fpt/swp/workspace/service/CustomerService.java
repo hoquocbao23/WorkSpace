@@ -1,13 +1,14 @@
 package fpt.swp.workspace.service;
 
-import fpt.swp.workspace.models.Customer;
-import fpt.swp.workspace.models.Wallet;
-import fpt.swp.workspace.repository.CustomerRepository;
+import fpt.swp.workspace.models.*;
+import fpt.swp.workspace.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 @Service
@@ -24,6 +25,18 @@ public class CustomerService implements ICustomerService {
 
     @Autowired
     private AwsS3Service awsS3Service;
+
+    @Autowired
+    private WalletRepository walletRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    @Autowired
+    private TransactionRepository transactionRepository;
+
+    @Autowired
+    private MembershipRepository membershipRepository;
 
     @Override
     public Customer getCustomerProfile(String token) {
@@ -87,5 +100,49 @@ public class CustomerService implements ICustomerService {
     @Override
     public Wallet getWalletByUserId(String userId) {
         return customerRepository.findWalletByUserId(userId);
+    }
+
+    @Override
+    public String buyMembership(String token, String memberShipId) {
+        String username = jwtService.extractUsername(token);
+        Customer customer = customerRepository.findCustomerByUsername(username);
+        if (customer.getMembership() != null) {
+            throw new RuntimeException("Customer already has a membership");
+        }
+        UserNumberShip membership = membershipRepository.findById(memberShipId)
+                .orElseThrow(() -> new RuntimeException("Membership not found"));
+
+        int amount = membership.getAmount();
+
+        Wallet wallet = walletRepository.findByUserId(customer.getUserId())
+                .orElseThrow(() -> new RuntimeException("Wallet not found"));
+        if (wallet.getAmount() < amount) {
+            throw new RuntimeException("Insufficient balance in wallet");
+        }
+        wallet.setAmount(wallet.getAmount() - amount);
+        walletRepository.save(wallet);
+        customer.setMembership(membership);
+        customerRepository.save(customer);
+
+        Payment payment = new Payment();
+        payment.setPaymentId(UUID.randomUUID().toString());
+        payment.setOrderBookingId(UUID.randomUUID().toString());
+        payment.setCustomer(customer);
+        payment.setAmount(amount);
+        payment.setStatus("completed");
+        payment.setPaymentMethod("wallet");
+        paymentRepository.save(payment);
+
+
+        Transaction transaction = new Transaction();
+        transaction.setTransactionId(UUID.randomUUID().toString());
+        transaction.setAmount(amount);
+        transaction.setStatus("completed");
+        transaction.setType("buy_membership");
+        transaction.setTransaction_time(LocalDateTime.now());
+        transaction.setPayment(payment);
+        transactionRepository.save(transaction);
+        System.out.println("Transaction details: " + transaction);
+        return "Membership buy successfully";
     }
 }

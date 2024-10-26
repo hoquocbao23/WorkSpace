@@ -19,7 +19,7 @@ public class Wallet {
     @Column(name = "Amount",nullable = false)
     private float amount;
 
-    @OneToOne(mappedBy = "wallet")
+    @OneToOne(mappedBy = "wallet", cascade = CascadeType.ALL)
     @JsonBackReference
     private Customer customer;
 }

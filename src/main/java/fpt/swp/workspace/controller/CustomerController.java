@@ -107,4 +107,16 @@ public class CustomerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+
+    @PostMapping("customer/buy/membership")
+    public ResponseEntity<String> buyMembership(@RequestHeader("Authorization") String token,
+                                                @RequestParam String membershipId) {
+        String jwtToken = token.substring(7);
+        try {
+            String result = customerService.buyMembership(jwtToken, membershipId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

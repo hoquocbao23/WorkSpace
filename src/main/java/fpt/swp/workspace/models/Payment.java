@@ -19,7 +19,7 @@ public class Payment {
     private String paymentId;
 
     @Column(nullable = false)
-    private int amount;
+    private float amount;
 
     @Column(nullable = false)
     private String status;  // pending, completed, failed

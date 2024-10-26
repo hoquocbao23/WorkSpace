@@ -1,6 +1,7 @@
 package fpt.swp.workspace.repository;
 
 import fpt.swp.workspace.models.Customer;
+import fpt.swp.workspace.models.UserNumberShip;
 import fpt.swp.workspace.models.Wallet;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,7 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
 
     @Query("SELECT c.wallet FROM Customer c WHERE c.user.userId = :userId")
     Wallet findWalletByUserId(@Param("userId") String userId);
+
+    @Query("SELECT c.membership FROM Customer c WHERE c.user.userId = :userId")
+    UserNumberShip findMemberShipByUserId(@Param("userId") String userId);
 }
