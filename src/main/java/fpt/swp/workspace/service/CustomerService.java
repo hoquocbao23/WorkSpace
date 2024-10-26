@@ -2,9 +2,11 @@ package fpt.swp.workspace.service;
 
 import fpt.swp.workspace.models.*;
 import fpt.swp.workspace.repository.*;
+import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -46,6 +48,7 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    @Transactional
     public Customer customerChangePassword(String username, String newpassword) {
         Customer customer =  customerRepository.findCustomerByUsername(username);
         if (customer != null) {
@@ -63,6 +66,7 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    @Transactional
     public Customer customerEditProfile(String username, Customer newCustomer) {
         Customer customer =  customerRepository.findCustomerByUsername(username);
 
@@ -87,6 +91,7 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    @Transactional
     public void updateCustomerImg(String token, MultipartFile file) {
         String username = jwtService.extractUsername(token);
         Customer customer =  customerRepository.findCustomerByUsername(username);
@@ -103,6 +108,7 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
+    @Transactional
     public String buyMembership(String token, String memberShipId) {
         String username = jwtService.extractUsername(token);
         Customer customer = customerRepository.findCustomerByUsername(username);
@@ -126,7 +132,7 @@ public class CustomerService implements ICustomerService {
 
         Payment payment = new Payment();
         payment.setPaymentId(UUID.randomUUID().toString());
-        payment.setOrderBookingId(UUID.randomUUID().toString());
+        // payment.setOrderBookingId(UUID.randomUUID().toString());
         payment.setCustomer(customer);
         payment.setAmount(amount);
         payment.setStatus("completed");
@@ -142,7 +148,6 @@ public class CustomerService implements ICustomerService {
         transaction.setTransaction_time(LocalDateTime.now());
         transaction.setPayment(payment);
         transactionRepository.save(transaction);
-        System.out.println("Transaction details: " + transaction);
         return "Membership buy successfully";
     }
 }
