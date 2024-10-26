@@ -111,7 +111,9 @@ public class CustomerService implements ICustomerService {
         }
         UserNumberShip membership = membershipRepository.findById(memberShipId)
                 .orElseThrow(() -> new RuntimeException("Membership not found"));
+
         int amount = membership.getAmount();
+
         Wallet wallet = walletRepository.findByUserId(customer.getUserId())
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
         if (wallet.getAmount() < amount) {
@@ -121,10 +123,17 @@ public class CustomerService implements ICustomerService {
         walletRepository.save(wallet);
         customer.setMembership(membership);
         customerRepository.save(customer);
-        Payment payment = paymentRepository.findByCustomer(customer)
-                .orElseThrow(() -> new RuntimeException("No payment found for this customer"));
-        payment.setAmount(payment.getAmount() + amount);
+
+        Payment payment = new Payment();
+        payment.setPaymentId(UUID.randomUUID().toString());
+        payment.setOrderBookingId(UUID.randomUUID().toString());
+        payment.setCustomer(customer);
+        payment.setAmount(amount);
+        payment.setStatus("completed");
+        payment.setPaymentMethod("wallet");
         paymentRepository.save(payment);
+
+
         Transaction transaction = new Transaction();
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setAmount(amount);

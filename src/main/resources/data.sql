@@ -52,3 +52,7 @@ VALUES ('1990-01-01', '0123456789', 'MANAGER', 'example@example.com', 'John Doe'
 
 INSERT INTO manager ( date_of_birth, phone_number, role_name, email, full_name, building_id, user_id)
 VALUES ('1990-01-01', '0123456789', 'MANAGER', 'example@example.com', 'Alex', 'BD002', 'MA002');
+
+-- MEMBERSHIP --
+INSERT INTO membership (membership_id, discount, membership_name, utilities, amount) values ('GOLD', 0.1, 'GOLD', '', '100000');
+INSERT INTO membership (membership_id, discount, membership_name, utilities, amount) values ('SILVER', 0.05, 'SILVER', '', '50000');
