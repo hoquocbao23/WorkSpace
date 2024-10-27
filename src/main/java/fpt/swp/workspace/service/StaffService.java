@@ -17,12 +17,15 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +38,8 @@ public class StaffService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
     private WalletRepository walletRepository;
@@ -360,6 +365,59 @@ public class StaffService {
         }
         return orderBookingDetailDTOList;
     }
+
+    public List<OrderBookingDetailDTO> getOrderBookingDetails(String token){
+        Staff staff = staffRepository.findStaffByUsername(jwtService.extractUsername(token));
+        List<OrderBooking> orderBookingList = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), staff.getBuildingId());
+        if (orderBookingList.isEmpty()) {
+            throw new NotFoundException("No order bookings found.");
+        }
+        List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
+
+        for (OrderBooking orderBooking : orderBookingList) {
+            OrderBookingDetailDTO dto = new OrderBookingDetailDTO();
+            dto.setBookingId(orderBooking.getBookingId());
+            dto.setCustomerId(orderBooking.getCustomer().getUserId());
+            dto.setRoomId(orderBooking.getRoom().getRoomId());
+            dto.setTotalPrice(orderBooking.getTotalPrice());
+            dto.setSlots(orderBooking.getSlot());
+            dto.setStatus(orderBooking.getStatus());
+            dto.setCheckinDate(orderBooking.getCheckinDate());
+            dto.setCheckoutDate(orderBooking.getCheckoutDate());
+
+            List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
+            Map<String, Integer> serviceList = new HashMap<>();
+            for (OrderBookingDetail bookingDetail : bookingDetails){
+                String serviceName = bookingDetail.getService().getServiceName();
+                int quantity = bookingDetail.getBookingServiceQuantity();
+                serviceList.put(serviceName, quantity);
+            }
+            dto.setServiceItems(serviceList);
+            orderBookingDetailDTOList.add(dto);
+        }
+        return orderBookingDetailDTOList;
+    }
+
+    @Scheduled(fixedRate = 3000)
+    @Transactional
+    public void updateBookingStatusSocket(){
+        List<OrderBooking> orderBookingList = orderBookingRepository.findBookingsByDate(LocalDate.now().toString());
+        for (OrderBooking orderBooking : orderBookingList) {
+            List<TimeSlot> timeSlots = orderBooking.getSlot();
+            for (TimeSlot timeSlot : timeSlots) {
+                if ( ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeStart().toString()), LocalTime.now()) > 15){
+                    orderBooking.setStatus(BookingStatus.FINISHED);
+                    orderBookingRepository.save(orderBooking);
+                    // Send the update to WebSocket clients
+                    simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
+                }
+            }
+        }
+        System.out.println("socket");
+        simpMessagingTemplate.convertAndSend("/bookings/status", "orderBooking");
+    }
+
+
 
     public List<OrderBookingDetailDTO> checkinByEmail(String date, String email) {
         Customer customer = customerRepository.findCustomerByEmail(email);

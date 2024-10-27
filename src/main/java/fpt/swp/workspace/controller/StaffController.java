@@ -155,9 +155,9 @@ public class StaffController {
     }
 
     @GetMapping("/check-order-booking")
-    public ResponseEntity<Object> getAllOrderBooking() {
+    public ResponseEntity<Object> getAllOrderBooking(@RequestHeader("Authorization") String token) {
         try {
-            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getOrderBookingDetails());
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getOrderBookingDetails(token));
         } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }
