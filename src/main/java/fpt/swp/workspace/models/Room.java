@@ -26,6 +26,7 @@ public class Room {
     @Column(nullable = false)
     private String creationTime;
 
+
     private String roomImg;
 
 

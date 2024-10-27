@@ -31,14 +31,13 @@ public class RoomController {
                                             @RequestParam(value = "image", required = false) MultipartFile image,
                                              @RequestParam(value = "status", required = false) String status,
                                              @RequestParam(value = "description", required = false) String description,
-                                             @RequestParam(value = "listStaffID", required = false) String[] listStaffID){
+                                             @RequestParam(value = "listStaffID", required = false) List<String> staffIdList){
         // Use parameter instead of body because image is a file
         // file should be multipart/form-data
         // JSON cann't handle this file
 
         try{
-            System.out.println(listStaffID.length);
-            Room newRoom = roomService.addNewRoom(buildingId, roomTypeId, roomName, price, listStaffID, image ,description, status);
+            Room newRoom = roomService.addNewRoom(buildingId, roomTypeId, roomName, price, staffIdList, image ,description, status);
             return ResponseHandler.responseBuilder("Them phong thanh cong", HttpStatus.OK, newRoom);
         } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -53,14 +52,14 @@ public class RoomController {
                                              @RequestParam(value = "image", required = false) MultipartFile[] image,
                                              @RequestParam(value = "status", required = false) String status,
                                              @RequestParam(value = "description", required = false) String description,
-                                             @RequestParam(value = "listStaffID", required = false) String[] listStaffID){
+                                             @RequestParam(value = "listStaffID", required = false) List<String> staffIdList){
         // Use parameter instead of body because image is a file
         // file should be multipart/form-data
         // JSON cann't handle this file
 
         try{
-            System.out.println(listStaffID.length);
-            Room newRoom = roomService.addNewRoomImg(buildingId, roomTypeId, roomName, price, listStaffID, image ,description, status);
+
+            Room newRoom = roomService.addNewRoomImg(buildingId, roomTypeId, roomName, price, staffIdList, image ,description, status);
             return ResponseHandler.responseBuilder("Them phong thanh cong", HttpStatus.OK, newRoom);
         } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -174,14 +173,14 @@ public class RoomController {
     public ResponseEntity<Object> updateRoom(@PathVariable String roomId,
                                              @RequestParam(value = "roomName", required = false) String roomName,
                                              @RequestParam(value = "price", required = false) String price,
-//                                             @RequestParam(value = "image", required = false) MultipartFile image,
+                                             @RequestParam(value = "image", required = false) MultipartFile[] image,
                                              @RequestParam(value = "status", required = false) String status,
-                                             @RequestParam(value = "listStaffID", required = false) String[] listStaffID,
+                                             @RequestParam(value = "listStaffID", required = false) List<String> staffIdList,
                                              @RequestParam(value = "description", required = false) String description) {
 
         try {
 
-            Room newRoom = roomService.updateRoom(roomId, roomName, price, status, listStaffID, description);
+            Room newRoom = roomService.updateRoom(roomId, roomName, price, status, image, staffIdList, description);
             return ResponseHandler.responseBuilder("Cap nhap thanh cong", HttpStatus.OK, newRoom);
         } catch (Exception e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);

@@ -41,8 +41,12 @@ public class RoomService implements IRoomService{
 
 
     @Override
-    public Room addNewRoom(String buildingId, String romeTypeId, String roomName, String price, String[] staffIdList, MultipartFile file, String description, String status) {
-        String img = awsS3Service.saveImgToS3(file);
+    public Room addNewRoom(String buildingId, String romeTypeId, String roomName, String price, List<String> staffIdList, MultipartFile file, String description, String status) {
+        String imgUrl = "";
+        if (imgUrl != null && imgUrl.length() > 0) {
+            imgUrl = awsS3Service.saveImgToS3(file);
+        }
+
         Building findBuilding = buildingRepository.findById(buildingId).orElseThrow();
         RoomType roomType = roomTypeRepository.findById(romeTypeId).orElseThrow();
         if (findBuilding == null) {
@@ -55,16 +59,16 @@ public class RoomService implements IRoomService{
         room.setRoomId(Helper.generateRoomId());
         room.setRoomName(roomName);
         room.setPrice(Float.parseFloat(price));
-        room.setRoomImg(img);
+        room.setRoomImg(imgUrl);
 
         // set local day time
         String creationTime = Helper.convertLocalDateTime();
         room.setCreationTime(creationTime);
 
         // conver array to string
-        List<String> listStaffId = Arrays.asList(staffIdList);
+
         List<Staff> staffList = new ArrayList<>();
-        for(String staffID : listStaffId) {
+        for(String staffID : staffIdList) {
             Staff staff = staffRepository.findById(staffID).get();
             staffList.add(staff);
         }
@@ -81,8 +85,11 @@ public class RoomService implements IRoomService{
     }
 
     @Override
-    public Room addNewRoomImg(String buildingId, String romeTypeId, String roomName, String price, String[] staffIdList, MultipartFile[] img, String description, String status) {
-        String imgUrl = awsS3Service.saveMultiImgToS3(img);
+    public Room addNewRoomImg(String buildingId, String romeTypeId, String roomName, String price, List<String> staffIdList, MultipartFile[] img, String description, String status) {
+        String imgUrl = "";
+        if (img != null && img.length > 0) {
+            imgUrl = awsS3Service.saveMultiImgToS3(img);
+        }
         Building findBuilding = buildingRepository.findById(buildingId).orElseThrow();
         RoomType roomType = roomTypeRepository.findById(romeTypeId).orElseThrow();
 
@@ -103,9 +110,8 @@ public class RoomService implements IRoomService{
         room.setCreationTime(creationTime);
 
         // conver array to string
-        List<String> listStaffId = Arrays.asList(staffIdList);
         List<Staff> staffList = new ArrayList<>();
-        for(String staffID : listStaffId) {
+        for(String staffID : staffIdList) {
             Staff staff = staffRepository.findById(staffID).get();
             staffList.add(staff);
         }
@@ -256,11 +262,11 @@ public class RoomService implements IRoomService{
 
 
     @Override
-    public Room updateRoom(String roomId, String roomName, String price, String status, String[] staffIdList, String description) {
-//        String imageUrl = null;
-//        if (file != null && !file.isEmpty()) {
-//            imageUrl = awsS3Service.saveImgToS3(file);
-//        }
+    public Room updateRoom(String roomId, String roomName, String price, String status, MultipartFile[] file, List<String> staffIdList, String description) {
+        String imgUrl = "";
+        if (file != null && file.length > 0) {
+            imgUrl = awsS3Service.saveMultiImgToS3(file);
+        }
         Room room = roomRepository.findById(roomId).orElseThrow();
         if (roomName != null){
             room.setRoomName(roomName);
@@ -268,16 +274,17 @@ public class RoomService implements IRoomService{
         if (price != null) {
             room.setPrice(Float.parseFloat(price));
         }
-//        if (imageUrl != null){
-//            room.setRoomImg(imageUrl);
-//        }
+        if (imgUrl.length() > 0){
+            String roomImg = room.getRoomImg().concat(", ");
+            roomImg = roomImg.concat(imgUrl);
+            room.setRoomImg(roomImg);
+        }
         if (status != null) {
             room.setStatus(status);
         }
         if (staffIdList != null) {
-            List<String> listStaffId = Arrays.asList(staffIdList);
             List<Staff> staffList = new ArrayList<>();
-            for(String staffID : listStaffId) {
+            for(String staffID : staffIdList) {
                 Staff staff = staffRepository.findById(staffID).get();
                 staffList.add(staff);
             }

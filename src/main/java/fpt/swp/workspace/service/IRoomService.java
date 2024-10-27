@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface IRoomService {
 
-    Room addNewRoom(String buildingId, String romeTypeId, String roomName, String price, String[] staffID, MultipartFile img, String description, String status);
+    Room addNewRoom(String buildingId, String romeTypeId, String roomName, String price, List<String> staffIdList, MultipartFile img, String description, String status);
 
-    Room addNewRoomImg(String buildingId, String romeTypeId, String roomName, String price, String[] staffID, MultipartFile[] img, String description, String status);
+    Room addNewRoomImg(String buildingId, String romeTypeId, String roomName, String price, List<String> staffIdList, MultipartFile[] img, String description, String status);
 
     RoomDTO getRoomImg(String roomID);
 
@@ -36,7 +36,9 @@ public interface IRoomService {
 
     List<RoomType> getAllRoomType();
 
-    Room updateRoom(String roomId, String roomName, String price, String status, String[] staffId, String description);
+//    Room updateRoom(String roomId, String roomName, String price, String status, String[] staffId, String description);
+
+    Room updateRoom(String roomId, String roomName, String price, String status, MultipartFile[] file, List<String> staffIdList, String description);
 
     void updateRoomStatus(String roomId, String roomStatus);
 
