@@ -141,7 +141,7 @@ public class StaffService {
         List<StaffResponse> responses = new ArrayList<>();
         String userName = jwtService.extractUsername(jwt);
         String buildingId = userRepository.findByuserName(userName).getManager().getBuildingId();
-        List<Staff> list = staffRepository.findByBuildingIdAndStatus(buildingId, UserStatus.AVAIABLE);
+        List<Staff> list = staffRepository.findByBuildingIdAndStatus(buildingId, UserStatus.ACTIVE, UserStatus.VACATION);
 
         for (Staff staff : list) {
             StaffResponse response = new StaffResponse();

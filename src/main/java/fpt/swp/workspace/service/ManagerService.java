@@ -56,7 +56,7 @@ public class ManagerService {
 //    }
 
     public List<Manager> getAllManagers() {
-        List<Manager> managers = managerRepository.findByStatus(UserStatus.AVAIABLE);
+        List<Manager> managers = managerRepository.findByStatus(UserStatus.AVAILABLE);
         if (managers.isEmpty()) {
             throw new RuntimeException("Empty managers list");
         }
