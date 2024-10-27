@@ -16,4 +16,7 @@ public interface StaffRepository extends JpaRepository<Staff, String> {
 
     List<Staff> findByBuildingIdAndStatus(String buildingId, UserStatus status);
 
+    @Query("SELECT S FROM Staff S WHERE (S.buildingId = ?1) AND S.status = ?2 OR S.status = ?3")
+    List<Staff> findByBuildingIdAndStatus(String buildingId, UserStatus status, UserStatus morestatus);
+
 }

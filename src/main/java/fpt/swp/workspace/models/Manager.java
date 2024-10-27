@@ -39,7 +39,7 @@ public class Manager {
     private String roleName;
 
     @Enumerated(EnumType.STRING)
-    private UserStatus status = UserStatus.AVAIABLE;
+    private UserStatus status = UserStatus.AVAILABLE;
 
     
     private String buildingId;

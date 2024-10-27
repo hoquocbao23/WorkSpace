@@ -56,7 +56,7 @@ public class Staff {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status = UserStatus.AVAIABLE;
+    private UserStatus status = UserStatus.AVAILABLE;
 
     @ManyToMany(mappedBy = "staff")
     @JsonIgnore
