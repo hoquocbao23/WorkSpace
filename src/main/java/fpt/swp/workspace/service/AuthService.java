@@ -53,7 +53,7 @@ public class AuthService implements IAuthService {
         try {
             User findUser = repository.findByuserName(request.getUserName());
             if (findUser != null) {
-                throw new RuntimeException("user already exists");
+                throw new RuntimeException("Người dùng đã tồn tại");
             }
 
             //case CUSTOMER
@@ -83,9 +83,9 @@ public class AuthService implements IAuthService {
                 newCustomer.setWallet(customerWallet);
                 customerRepository.save(newCustomer);
                 if (result.getUserId() != null) {
-                    response.setStatus("Success");
+                    response.setStatus("Thành công");
                     response.setStatusCode(200);
-                    response.setMessage("User Saved Successfully");
+                    response.setMessage("Đăng ký thành công");
                     response.setData(result);
                     response.setRefresh_token(jwtService.generateAccessToken(new HashMap<>(), request.getUserName()));
                     response.setAccess_token(jwtService.generateRefreshToken(request.getUserName()));
@@ -109,13 +109,13 @@ public class AuthService implements IAuthService {
 
         User user = repository.findByuserName(request.getUserName());
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new NullPointerException("User not found or Password do not match");
+            throw new NullPointerException("Username hoặc password không đúng");
         }
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
         String jwt = jwtService.generateAccessToken(new HashMap<>(), user.getUsername());
         String refreshToken = jwtService.generateRefreshToken(user.getUsername());
         response.setStatusCode(200);
-        response.setMessage("Successfully Logged In");
+        response.setMessage("Đăng nhập thành công");
         response.setData(user);
         response.setAccess_token(jwt);
         response.setRefresh_token(refreshToken);

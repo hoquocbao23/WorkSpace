@@ -42,9 +42,9 @@ INSERT INTO user (user_id, password, role_name, username) VALUES ('ST02', '$2a$1
 
 -- STAFF --
 INSERT INTO staff ( date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status, role_name)
-VALUES ( '1990-05-20', '0123456789', 'MORNING', 'example@example.com', 'John Doe', 'Mon,Tue,Wed', 'BD001', 'ST01', 'AVAIABLE','STAFF');
+VALUES ( '1990-05-20', '0123456789', 'MORNING', 'example@example.com', 'John Doe', 'MONDAY,TUESDAY, WEDNESDAY', 'BD001', 'ST01', 'AVAIABLE','STAFF');
 INSERT INTO staff ( date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status, role_name)
-VALUES ('1990-05-20', '0123456789', 'MORNING', 'example@example.com', 'Marry', 'Mon,Tue,Wed', 'BD001', 'ST02', 'AVAIABLE', 'STAFF');
+VALUES ('1990-05-20', '0123456789', 'MORNING', 'example@example.com', 'Marry', 'THURSDAY, FRIDAY, SATURDAY', 'BD001', 'ST02', 'AVAIABLE', 'STAFF');
 
 -- MANAGER --
 INSERT INTO manager ( date_of_birth, phone_number, role_name, email, full_name, building_id, user_id)

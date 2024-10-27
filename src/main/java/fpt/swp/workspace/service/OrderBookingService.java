@@ -8,6 +8,8 @@ import fpt.swp.workspace.repository.*;
 
 import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
@@ -57,6 +59,9 @@ public class OrderBookingService implements IOrderBookingService {
 
     @Autowired
     private TransactionRepository transactionRepository;
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @Override
     public List<OrderBookingDetailDTO> getBookedSlotByRoomAndDate(String date, String roomId) {
@@ -723,7 +728,8 @@ public class OrderBookingService implements IOrderBookingService {
             orderBookingDetailDTOList.add(dto);
         }
         return orderBookingDetailDTOList;
-
     }
+
+
 }
 

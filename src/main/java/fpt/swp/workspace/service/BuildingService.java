@@ -30,12 +30,12 @@ public class BuildingService {
 
     public Building findBuildingById(String wsId) {
         return buildingRepository.findById(wsId)
-                .orElseThrow(() -> new RuntimeException("Building not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy building"));
     }
 
     public Building updateBuilding(String wsId, BuildingRequest request) {
         Building building = buildingRepository.findById(wsId)
-                .orElseThrow(() -> new RuntimeException("Building not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy building"));
 
         if (request.getBuildingName() != null) {
             building.setBuildingName(request.getBuildingName());
@@ -51,7 +51,7 @@ public class BuildingService {
 
     public void deleteBuilding(String wsId) {
         Building building = buildingRepository.findById(wsId)
-                .orElseThrow(() -> new RuntimeException("Building not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy building"));
 
         buildingRepository.delete(building);
     }

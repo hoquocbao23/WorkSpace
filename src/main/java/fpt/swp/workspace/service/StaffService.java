@@ -13,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -64,6 +68,8 @@ public class StaffService {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+
 
     public AuthenticationResponse createStaff(StaffRequest request) {
         AuthenticationResponse response = new AuthenticationResponse();
@@ -442,14 +448,16 @@ public class StaffService {
         if (order.getStatus() == BookingStatus.CANCELLED) {
             throw new RuntimeException("Booking " + bookingId + " đã bị huỷ.");
         }
-        // convert String -> Enum
-        if ( order.getStatus() == BookingStatus.valueOf(status)) {
-            throw new RuntimeException("Trạng thái đã được đặt");
-        }
-        // convert String -> Enum
-        order.setStatus(BookingStatus.valueOf(status));
-        orderBookingRepository.save(order);
+            // convert String -> Enum
+            if ( order.getStatus() == BookingStatus.valueOf(status)) {
+                throw new RuntimeException("Trạng thái đã được đặt");
+            }
+            // convert String -> Enum
+            order.setStatus(BookingStatus.valueOf(status));
+            orderBookingRepository.save(order);
     }
+
+
 
     public void acceptPendingBooking(String bookingId){
         OrderBooking orderBooking = orderBookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking " + bookingId + " không có trong danh sách chờ! "));
