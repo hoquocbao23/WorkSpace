@@ -6,7 +6,6 @@ import fpt.swp.workspace.models.User;
 public interface IDashboardService {
     DashboardDTO getTotalBookingInDate(String token);
 
-
     DashboardDTO getTotalBookingInWeek(String token);
 
     DashboardDTO getTotalBookingInMonth(String token);
@@ -24,4 +23,25 @@ public interface IDashboardService {
     DashboardDTO bookingAnalystByWeek(String token);
 
     DashboardDTO bookingAnalystByMonth(String token);
+
+    // Owner
+    DashboardDTO getTotalBookingInDateOwner(String buildingId);
+
+    DashboardDTO getTotalBookingInWeekOwner(String buildingId);
+
+    DashboardDTO getTotalBookingInMonthOwner(String buildingId);
+
+    DashboardDTO getTotalSpaceOwner(String buildingId);
+
+    DashboardDTO roomTypeAnalystByDateOwner(String buildingId);
+
+    DashboardDTO roomTypeAnalystByWeekOwner(String buildingId);
+
+    DashboardDTO roomTypeAnalystByMonthOwner(String buildingId);
+
+    DashboardDTO bookingAnalystByDateOwner(String buildingId);
+
+    DashboardDTO bookingAnalystByWeekOwner(String buildingId);
+
+    DashboardDTO bookingAnalystByMonthOwner(String buildingId);
 }

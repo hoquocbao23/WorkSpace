@@ -156,8 +156,9 @@ public class StaffController {
 
     @GetMapping("/check-order-booking")
     public ResponseEntity<Object> getAllOrderBooking(@RequestHeader("Authorization") String token) {
+        String jwtToken = token.substring(7);
         try {
-            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getOrderBookingDetails(token));
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getOrderBookingDetails(jwtToken));
         } catch (NullPointerException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
         }

@@ -1,5 +1,6 @@
 package fpt.swp.workspace.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,7 @@ public class UserNumberShip {
     private int amount;
 
     @OneToMany(mappedBy = "membership", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Customer> customers = new ArrayList<>();
 
 }

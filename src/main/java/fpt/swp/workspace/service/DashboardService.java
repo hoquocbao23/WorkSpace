@@ -33,11 +33,11 @@ public class DashboardService implements IDashboardService {
     public DashboardDTO getTotalBookingInDate(String token) {
         int count = 0;
         User user = authService.getUser(token);
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
-             count = orderBookingRepository.countBookingsByDate(LocalDate.now().toString(), buildingId, BookingStatus.CANCELLED);
+            count = orderBookingRepository.countBookingsByDate(LocalDate.now().toString(), buildingId, BookingStatus.CANCELLED);
 
-        }else {
+        } else {
             count = orderBookingRepository.countBookingsByDate(LocalDate.now().toString(), BookingStatus.CANCELLED);
         }
         DashboardDTO dashboardDTO = new DashboardDTO();
@@ -56,10 +56,10 @@ public class DashboardService implements IDashboardService {
         String endWeek = endOfWeek.toString();
 
 
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             count = orderBookingRepository.countBookingManyDays(starWeek, endWeek, buildingId, BookingStatus.CANCELLED);
-        }else {
+        } else {
             count = orderBookingRepository.countBookingManyDays(starWeek, endWeek, BookingStatus.CANCELLED);
         }
         DashboardDTO dashboardDTO = new DashboardDTO();
@@ -88,10 +88,10 @@ public class DashboardService implements IDashboardService {
         String endMonth = endOfMonth.toString();
 
 
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             count = orderBookingRepository.countBookingManyDays(starMonth, endMonth, buildingId, BookingStatus.CANCELLED);
-        }else {
+        } else {
             count = orderBookingRepository.countBookingsByDate(starMonth, endMonth, BookingStatus.CANCELLED);
         }
         DashboardDTO dashboardDTO = new DashboardDTO();
@@ -100,14 +100,14 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO getTotalSpace(String token){
+    public DashboardDTO getTotalSpace(String token) {
         int count = 0;
         User user = authService.getUser(token);
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             count = roomRepository.getTotalSpace(buildingId);
 
-        }else {
+        } else {
             count = roomRepository.getTotalSpace();
         }
         DashboardDTO dashboardDTO = new DashboardDTO();
@@ -116,21 +116,21 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO roomTypeAnalystByDate(String token){
+    public DashboardDTO roomTypeAnalystByDate(String token) {
         User user = authService.getUser(token);
-        List<OrderBooking> listOrder ;
+        List<OrderBooking> listOrder;
         Map<String, Integer> roomType = new HashMap<>();
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), buildingId);
-        }else {
+        } else {
             listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString());
         }
         for (OrderBooking order : listOrder) {
             String roomTypeId = order.getRoom().getRoomType().getRoomTypeName();
             if (roomType.containsKey(roomTypeId)) {
                 roomType.put(roomTypeId, roomType.get(roomTypeId) + 1);
-            }else {
+            } else {
                 roomType.put(roomTypeId, 1);
             }
         }
@@ -140,26 +140,26 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO roomTypeAnalystByWeek(String token){
+    public DashboardDTO roomTypeAnalystByWeek(String token) {
         User user = authService.getUser(token);
-        List<OrderBooking> listOrder ;
+        List<OrderBooking> listOrder;
         Map<String, Integer> roomType = new HashMap<>();
         LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
         LocalDate endOfWeek = startOfWeek.plusDays(6);
 
         String starWeek = startOfWeek.toString();
         String endWeek = endOfWeek.toString();
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             listOrder = orderBookingRepository.findBookingManyDays(starWeek, endWeek, buildingId);
-        }else{
+        } else {
             listOrder = orderBookingRepository.findBookingManyDaysOwner(starWeek, endWeek);
         }
         for (OrderBooking order : listOrder) {
             String roomTypeId = order.getRoom().getRoomType().getRoomTypeName();
             if (roomType.containsKey(roomTypeId)) {
                 roomType.put(roomTypeId, roomType.get(roomTypeId) + 1);
-            }else {
+            } else {
                 roomType.put(roomTypeId, 1);
             }
         }
@@ -169,9 +169,9 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO roomTypeAnalystByMonth(String token){
+    public DashboardDTO roomTypeAnalystByMonth(String token) {
         User user = authService.getUser(token);
-        List<OrderBooking> listOrder ;
+        List<OrderBooking> listOrder;
         Map<String, Integer> roomType = new HashMap<>();
 
         // Lấy ngày hiện tại
@@ -189,17 +189,17 @@ public class DashboardService implements IDashboardService {
         String starMonth = startOfMonth.toString();
         String endMonth = endOfMonth.toString();
 
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             listOrder = orderBookingRepository.findBookingManyDays(starMonth, endMonth, buildingId);
-        }else{
+        } else {
             listOrder = orderBookingRepository.findBookingManyDaysOwner(starMonth, endMonth);
         }
         for (OrderBooking order : listOrder) {
             String roomTypeId = order.getRoom().getRoomType().getRoomTypeName();
             if (roomType.containsKey(roomTypeId)) {
                 roomType.put(roomTypeId, roomType.get(roomTypeId) + 1);
-            }else {
+            } else {
                 roomType.put(roomTypeId, 1);
             }
         }
@@ -209,14 +209,14 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO bookingAnalystByDate(String token){
+    public DashboardDTO bookingAnalystByDate(String token) {
         User user = authService.getUser(token);
         List<OrderBooking> listOrder;
         Map<String, Integer> booking = new HashMap<>();
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
-             listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), buildingId);
-        }else {
+            listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), buildingId);
+        } else {
             listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString());
         }
 
@@ -224,7 +224,7 @@ public class DashboardService implements IDashboardService {
             String status = order.getStatus().toString();
             if (booking.containsKey(status)) {
                 booking.put(status, booking.get(status) + 1);
-            }else {
+            } else {
                 booking.put(status, 1);
             }
         }
@@ -234,7 +234,7 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO bookingAnalystByWeek(String token){
+    public DashboardDTO bookingAnalystByWeek(String token) {
         User user = authService.getUser(token);
         List<OrderBooking> listOrder;
         Map<String, Integer> booking = new HashMap<>();
@@ -243,10 +243,10 @@ public class DashboardService implements IDashboardService {
 
         String starWeek = startOfWeek.toString();
         String endWeek = endOfWeek.toString();
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             listOrder = orderBookingRepository.findBookingManyDays(starWeek, endWeek, buildingId);
-        }else {
+        } else {
             listOrder = orderBookingRepository.findBookingManyDaysOwner(starWeek, endWeek);
         }
 
@@ -254,7 +254,7 @@ public class DashboardService implements IDashboardService {
             String status = order.getStatus().toString();
             if (booking.containsKey(status)) {
                 booking.put(status, booking.get(status) + 1);
-            }else {
+            } else {
                 booking.put(status, 1);
             }
         }
@@ -264,7 +264,7 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO bookingAnalystByMonth(String token){
+    public DashboardDTO bookingAnalystByMonth(String token) {
         User user = authService.getUser(token);
         List<OrderBooking> listOrder;
         Map<String, Integer> booking = new HashMap<>();
@@ -282,10 +282,10 @@ public class DashboardService implements IDashboardService {
 
         String starMonth = startOfMonth.toString();
         String endMonth = endOfMonth.toString();
-        if (user.getManager()!=null) {
+        if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
             listOrder = orderBookingRepository.findBookingManyDays(starMonth, endMonth, buildingId);
-        }else {
+        } else {
             listOrder = orderBookingRepository.findBookingManyDaysOwner(starMonth, endMonth);
         }
 
@@ -293,7 +293,7 @@ public class DashboardService implements IDashboardService {
             String status = order.getStatus().toString();
             if (booking.containsKey(status)) {
                 booking.put(status, booking.get(status) + 1);
-            }else {
+            } else {
                 booking.put(status, 1);
             }
         }
@@ -302,11 +302,216 @@ public class DashboardService implements IDashboardService {
         return dashboardDTO;
     }
 
+    // -- OWNER --
+    @Override
+    public DashboardDTO getTotalBookingInDateOwner(String buildingId) {
+        int count = 0;
+        count = orderBookingRepository.countBookingsByDate(LocalDate.now().toString(), buildingId, BookingStatus.CANCELLED);
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setTotalBookingSlot(count);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO getTotalBookingInWeekOwner(String buildingId) {
+        int count = 0;
+        LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        String starWeek = startOfWeek.toString();
+        String endWeek = endOfWeek.toString();
+        count = orderBookingRepository.countBookingManyDays(starWeek, endWeek, buildingId, BookingStatus.CANCELLED);
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setTotalBookingSlot(count);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO getTotalBookingInMonthOwner(String buildingId) {
+
+        int count = 0;
+
+        // Lấy ngày hiện tại
+        LocalDate today = LocalDate.now();
+
+        // Lấy năm và tháng hiện tại
+        int year = today.getYear();
+        Month month = today.getMonth();
+
+        // Ngày đầu của tháng
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        // Ngày cuối của tháng
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        String starMonth = startOfMonth.toString();
+        String endMonth = endOfMonth.toString();
+        count = orderBookingRepository.countBookingManyDays(starMonth, endMonth, buildingId, BookingStatus.CANCELLED);
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setTotalBookingSlot(count);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO getTotalSpaceOwner(String buildingId) {
+        int count = 0;
+        count = roomRepository.getTotalSpace(buildingId);
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setTotalSpace(count);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO roomTypeAnalystByDateOwner(String buildingId) {
+
+        List<OrderBooking> listOrder;
+        Map<String, Integer> roomType = new HashMap<>();
+        listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), buildingId);
+        for (OrderBooking order : listOrder) {
+            String roomTypeId = order.getRoom().getRoomType().getRoomTypeName();
+            if (roomType.containsKey(roomTypeId)) {
+                roomType.put(roomTypeId, roomType.get(roomTypeId) + 1);
+            } else {
+                roomType.put(roomTypeId, 1);
+            }
+        }
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setRoomTypeAnalyst(roomType);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO roomTypeAnalystByWeekOwner(String buildingId) {
+
+        List<OrderBooking> listOrder;
+        Map<String, Integer> roomType = new HashMap<>();
+        LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+
+        String starWeek = startOfWeek.toString();
+        String endWeek = endOfWeek.toString();
+        listOrder = orderBookingRepository.findBookingManyDays(starWeek, endWeek, buildingId);
+        for (OrderBooking order : listOrder) {
+            String roomTypeId = order.getRoom().getRoomType().getRoomTypeName();
+            if (roomType.containsKey(roomTypeId)) {
+                roomType.put(roomTypeId, roomType.get(roomTypeId) + 1);
+            } else {
+                roomType.put(roomTypeId, 1);
+            }
+        }
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setRoomTypeAnalyst(roomType);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO roomTypeAnalystByMonthOwner(String buildingId) {
+
+        List<OrderBooking> listOrder;
+        Map<String, Integer> roomType = new HashMap<>();
+
+        // Lấy ngày hiện tại
+        LocalDate today = LocalDate.now();
+
+        // Lấy năm và tháng hiện tại
+        int year = today.getYear();
+        Month month = today.getMonth();
+
+        // Ngày đầu của tháng
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        // Ngày cuối của tháng
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        String starMonth = startOfMonth.toString();
+        String endMonth = endOfMonth.toString();
 
 
+        listOrder = orderBookingRepository.findBookingManyDays(starMonth, endMonth, buildingId);
+
+        for (OrderBooking order : listOrder) {
+            String roomTypeId = order.getRoom().getRoomType().getRoomTypeName();
+            if (roomType.containsKey(roomTypeId)) {
+                roomType.put(roomTypeId, roomType.get(roomTypeId) + 1);
+            } else {
+                roomType.put(roomTypeId, 1);
+            }
+        }
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setRoomTypeAnalyst(roomType);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO bookingAnalystByDateOwner(String buildingId) {
+
+        List<OrderBooking> listOrder;
+        Map<String, Integer> booking = new HashMap<>();
+
+        listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), buildingId);
 
 
+        for (OrderBooking order : listOrder) {
+            String status = order.getStatus().toString();
+            if (booking.containsKey(status)) {
+                booking.put(status, booking.get(status) + 1);
+            } else {
+                booking.put(status, 1);
+            }
+        }
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setBookingAnalyst(booking);
+        return dashboardDTO;
+    }
 
+    @Override
+    public DashboardDTO bookingAnalystByWeekOwner(String buildingId) {
+        List<OrderBooking> listOrder;
+        Map<String, Integer> booking = new HashMap<>();
+        LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = startOfWeek.plusDays(6);
+        String starWeek = startOfWeek.toString();
+        String endWeek = endOfWeek.toString();
+        listOrder = orderBookingRepository.findBookingManyDays(starWeek, endWeek, buildingId);
+        for (OrderBooking order : listOrder) {
+            String status = order.getStatus().toString();
+            if (booking.containsKey(status)) {
+                booking.put(status, booking.get(status) + 1);
+            } else {
+                booking.put(status, 1);
+            }
+        }
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setBookingAnalyst(booking);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO bookingAnalystByMonthOwner(String buildingId) {
+        List<OrderBooking> listOrder;
+        Map<String, Integer> booking = new HashMap<>();
+        // Lấy ngày hiện tại
+        LocalDate today = LocalDate.now();
+        // Lấy năm và tháng hiện tại
+        int year = today.getYear();
+        Month month = today.getMonth();
+        // Ngày đầu của tháng
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        // Ngày cuối của tháng
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+        String starMonth = startOfMonth.toString();
+        String endMonth = endOfMonth.toString();
+        listOrder = orderBookingRepository.findBookingManyDays(starMonth, endMonth, buildingId);
+        for (OrderBooking order : listOrder) {
+            String status = order.getStatus().toString();
+            if (booking.containsKey(status)) {
+                booking.put(status, booking.get(status) + 1);
+            } else {
+                booking.put(status, 1);
+            }
+        }
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        dashboardDTO.setBookingAnalyst(booking);
+        return dashboardDTO;
+    }
 
 
 }
