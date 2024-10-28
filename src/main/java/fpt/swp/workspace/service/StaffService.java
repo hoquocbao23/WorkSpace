@@ -367,7 +367,8 @@ public class StaffService {
     }
 
     public List<OrderBookingDetailDTO> getOrderBookingDetails(String token){
-        Staff staff = staffRepository.findStaffByUsername(jwtService.extractUsername(token));
+        String userName = jwtService.extractUsername(token);
+        Staff staff = staffRepository.findStaffByUsername(userName);
         List<OrderBooking> orderBookingList = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), staff.getBuildingId());
         if (orderBookingList.isEmpty()) {
             throw new NotFoundException("No order bookings found.");
@@ -398,23 +399,23 @@ public class StaffService {
         return orderBookingDetailDTOList;
     }
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 10000)
     @Transactional
     public void updateBookingStatusSocket(){
         List<OrderBooking> orderBookingList = orderBookingRepository.findBookingsByDate(LocalDate.now().toString());
         for (OrderBooking orderBooking : orderBookingList) {
-            List<TimeSlot> timeSlots = orderBooking.getSlot();
-            for (TimeSlot timeSlot : timeSlots) {
-                if ( ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeStart().toString()), LocalTime.now()) > 15){
-                    orderBooking.setStatus(BookingStatus.FINISHED);
-                    orderBookingRepository.save(orderBooking);
-                    // Send the update to WebSocket clients
-                    simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
+            if (orderBooking.getBookingId().equals(BookingStatus.UPCOMING.toString())) {
+                List<TimeSlot> timeSlots = orderBooking.getSlot();
+                for (TimeSlot timeSlot : timeSlots) {
+                    if (ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeStart().toString()), LocalTime.now()) > 15) {
+                        orderBooking.setStatus(BookingStatus.FINISHED);
+                        orderBookingRepository.save(orderBooking);
+                        // Send the update to WebSocket clients
+                        simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
+                    }
                 }
             }
         }
-        System.out.println("socket");
-        simpMessagingTemplate.convertAndSend("/bookings/status", "orderBooking");
     }
 
 
