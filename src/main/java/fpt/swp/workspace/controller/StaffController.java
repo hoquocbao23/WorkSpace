@@ -49,6 +49,17 @@ public class StaffController {
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getAllStaffs(jwt));
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<Object> getStaffProfile(@RequestHeader("Authorization")String token) {
+        String jwt = token.substring(7);
+        try {
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, staffService.getStaffProfile(jwt));
+        } catch (NullPointerException e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
     @GetMapping("/{id}")
     public StaffResponse getStaffById(@PathVariable String id) {
         return staffService.getStaffById(id);

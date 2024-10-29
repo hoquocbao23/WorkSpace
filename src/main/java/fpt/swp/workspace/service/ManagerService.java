@@ -1,11 +1,15 @@
 package fpt.swp.workspace.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
+import fpt.swp.workspace.DTO.ManagerDTO;
 import fpt.swp.workspace.models.Manager;
+import fpt.swp.workspace.models.User;
 import fpt.swp.workspace.models.UserStatus;
 import fpt.swp.workspace.repository.BuildingRepository;
 import fpt.swp.workspace.repository.ManagerRepository;
 import fpt.swp.workspace.repository.UserRepo;
 import fpt.swp.workspace.response.ManagerRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,6 +29,10 @@ public class ManagerService {
 
     @Autowired
     private BuildingRepository buildingRepository;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private ModelMapper modelMapper;
 
 //    public Manager createManager(ManagerRequest request) {
 //        boolean buildingExists = buildingRepository.existsById(request.getBuildingId());
@@ -67,6 +75,15 @@ public class ManagerService {
     public Manager getManagerById(String managerId) {
         return managerRepository.findById(managerId)
                 .orElseThrow(() -> new RuntimeException("Manager not found"));
+    }
+
+    public ManagerDTO getManagerProfile(String token){
+        User user = authService.getUser(token);
+        Manager manager = user.getManager();
+        if (manager == null){
+            throw new NotFoundException("Manager not found");
+        }
+        return modelMapper.map(manager, ManagerDTO.class);
     }
 
     public Manager updateManager(String managerId, ManagerRequest request) {
