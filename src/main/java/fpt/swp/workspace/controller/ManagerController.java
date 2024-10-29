@@ -67,6 +67,17 @@ public class ManagerController {
         }
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<Object> getManagerProfile(@RequestHeader("Authorization") String token){
+        String jwt = token.substring(7);
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, managerService.getManagerProfile(jwt));
+        }catch (NullPointerException e){
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<APIResponse<Void>> deleteManager(@PathVariable String id) {
 //        try {

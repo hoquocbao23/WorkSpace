@@ -7,7 +7,6 @@ import fpt.swp.workspace.auth.AuthenticationResponse;
 import fpt.swp.workspace.models.*;
 import fpt.swp.workspace.repository.*;
 import fpt.swp.workspace.response.*;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -175,6 +173,8 @@ public class StaffService {
         return responses;
     }
 
+
+
     public StaffResponse getWorkShift(String jwt){
 
         String userName = jwtService.extractUsername(jwt);
@@ -208,9 +208,19 @@ public class StaffService {
         return modelMapper.map(staff, StaffResponse.class);
     }
 
+    public StaffResponse getStaffProfile(String token) {
+        String username = jwtService.extractUsername(token);
+        Staff staff = staffRepository.findStaffByUsername(username);
+        if (staff == null) {
+            throw new NullPointerException("Không tìm thấy staff");
+        }
+
+        return modelMapper.map(staff, StaffResponse.class);
+    }
+
     public Staff updateStaff(String staffId, UpdateStaffRequest request) {
         Staff existedStaff = staffRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("Staff not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy staff"));
 
         if(request.getFullName() != null){
             existedStaff.setFullName(request.getFullName());
