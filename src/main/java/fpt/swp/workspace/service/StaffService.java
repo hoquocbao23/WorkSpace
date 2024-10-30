@@ -234,6 +234,9 @@ public class StaffService {
         if(request.getWorkShift() != null){
             existedStaff.setWorkShift(WorkShift.valueOf(request.getWorkShift()));
         }
+        if (request.getDateOfBirth() != null) {
+            existedStaff.setDateOfBirth(request.getDateOfBirth());
+        }
         if(request.getWorkDays() != null){
             existedStaff.setWorkDays(request.getWorkDays());
         }
