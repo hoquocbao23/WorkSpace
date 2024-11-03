@@ -246,6 +246,19 @@ public class OrderBookingController {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PutMapping("/customer/cancel")
+    public ResponseEntity<Object> cancel(@RequestHeader("Authorization") String token,
+                                                @RequestParam("bookingId") String bookingId) {
+        String jwtToken = token.substring(7);
+        System.out.println(jwtToken);
+        try {
+            orderBookingService.cancelOrderBooking(jwtToken, bookingId);
+            return ResponseHandler.responseBuilder("Đã huỷ thành công", HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }
 
 

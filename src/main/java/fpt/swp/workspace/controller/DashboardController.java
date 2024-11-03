@@ -15,65 +15,57 @@ public class DashboardController {
     @Autowired
     private DashboardService dashboardService;
 
-    @GetMapping("owner/total-booking-in-date")
+    @GetMapping("/total-booking-in-date")
     public ResponseEntity<Object> totalBookingInDate(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getTotalBookingInDate(jwt));
     }
-
-    @GetMapping("owner/total-booking-in-week")
+    @GetMapping("/total-booking-in-week")
     public ResponseEntity<Object> totalBookingInWeek(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getTotalBookingInWeek(jwt));
     }
-
-    @GetMapping("owner/total-booking-in-moth")
+    @GetMapping("/total-booking-in-moth")
     public ResponseEntity<Object> totalBookingInMonth(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getTotalBookingInMonth(jwt));
     }
-
-    @GetMapping("owner/total-space")
+    @GetMapping("/total-space")
     public ResponseEntity<Object> totalSpace(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getTotalSpace(jwt));
     }
-
-    @GetMapping("owner/room-type-analyst-date")
+    @GetMapping("/room-type-analyst-date")
     public ResponseEntity<Object> roomTypeAnalystDate(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.roomTypeAnalystByDate(jwt));
     }
-
-    @GetMapping("owner/room-type-analyst-week")
+    @GetMapping("/room-type-analyst-week")
     public ResponseEntity<Object> roomTypeAnalystWeek(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.roomTypeAnalystByWeek(jwt));
     }
-
-    @GetMapping("owner/room-type-analyst-month")
+    @GetMapping("/room-type-analyst-month")
     public ResponseEntity<Object> roomTypeAnalystMonth(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.roomTypeAnalystByMonth(jwt));
     }
-
-    @GetMapping("owner/booking-analyst-date")
+    @GetMapping("/booking-analyst-date")
     public ResponseEntity<Object> bookingAnalystDate(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.bookingAnalystByDate(jwt));
     }
-
-    @GetMapping("owner/booking-analyst-week")
+    @GetMapping("/booking-analyst-week")
     public ResponseEntity<Object> bookingAnalystWeek(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.bookingAnalystByWeek(jwt));
     }
-
-    @GetMapping("owner/booking-analyst-month")
+    @GetMapping("/booking-analyst-month")
     public ResponseEntity<Object> bookingAnalystMonth(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.bookingAnalystByMonth(jwt));
     }
+
 
     // owner
     @GetMapping("owner/total-booking-in-date/{buildingId}")

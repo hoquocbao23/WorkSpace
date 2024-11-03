@@ -8,7 +8,8 @@ import fpt.swp.workspace.repository.*;
 
 import fpt.swp.workspace.util.Helper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+//import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,8 +61,8 @@ public class OrderBookingService implements IOrderBookingService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    @Autowired
-    private SimpMessagingTemplate template;
+//    @Autowired
+//    private SimpMessagingTemplate template;
 
     @Override
     public List<OrderBookingDetailDTO> getBookedSlotByRoomAndDate(String date, String roomId) {
@@ -589,7 +590,6 @@ public class OrderBookingService implements IOrderBookingService {
     }
 
     @Override
-    @Transactional
     public void cancelOrderBooking(String jwttoken, String orderBookingId) {
         String username = jwtService.extractUsername(jwttoken);
         Customer customer = customerRepository.findCustomerByUsername(username);
@@ -604,8 +604,8 @@ public class OrderBookingService implements IOrderBookingService {
             throw new RuntimeException("Booking cannot be canceled");
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate createDate = LocalDate.parse(orderBooking.getCreateAt().substring(0, 10), formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        LocalDate createDate = LocalDateTime.parse(orderBooking.getCreateAt(), formatter).toLocalDate();
         // nếu đặt trong ngày -> huỷ
         if (createDate.equals(LocalDate.parse(orderBooking.getCheckinDate()))) {
             orderBooking.setStatus(BookingStatus.CANCELLED);
@@ -634,11 +634,15 @@ public class OrderBookingService implements IOrderBookingService {
                 paymentRepository.save(payment);
             }
         } else {
-            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
-            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
-            System.out.println("hours:" + hours);
-            System.out.println("now" + LocalDateTime.now());
-            if (hours > 24) {
+//            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
+//            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
+//           System.out.println("Hours: " + hours);
+            LocalDate checkinDate = LocalDate.parse(orderBooking.getCheckinDate());
+            System.out.println(checkinDate);
+            long days = ChronoUnit.DAYS.between(LocalDate.now(), checkinDate);
+            System.out.println("day:" + days);
+            System.out.println("now" + LocalDate.now());
+            if (days > 1) {
                 // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
@@ -665,33 +669,33 @@ public class OrderBookingService implements IOrderBookingService {
                     payment.setStatus("completed");
                     paymentRepository.save(payment);
                 }
-            } else if (hours < 24 && hours > 6) {
-                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
-                orderBooking.setStatus(BookingStatus.CANCELLED);
-                orderBookingRepository.save(orderBooking);
-
-                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
-                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
-
-                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
-                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
-
-                if (payment.getStatus().equals("completed")) {
-                    // Hoàn lại tiền vào ví
-                    wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
-                    walletRepository.save(wallet);
-
-                    Transaction refundTransaction = new Transaction();
-                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
-                    refundTransaction.setAmount(payment.getAmount() * 0.5f);
-                    refundTransaction.setStatus("completed");
-                    refundTransaction.setType("refund");
-                    refundTransaction.setTransaction_time(LocalDateTime.now());
-                    refundTransaction.setPayment(payment);
-                    transactionRepository.save(refundTransaction);
-                    payment.setStatus("completed");
-                    paymentRepository.save(payment);
-                }
+//            } else if (hours < 24 && hours > 6) {
+//                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
+//                orderBooking.setStatus(BookingStatus.CANCELLED);
+//                orderBookingRepository.save(orderBooking);
+//
+//                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+//                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+//
+//                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+//                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
+//
+//                if (payment.getStatus().equals("completed")) {
+//                    // Hoàn lại tiền vào ví
+//                    wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
+//                    walletRepository.save(wallet);
+//
+//                    Transaction refundTransaction = new Transaction();
+//                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
+//                    refundTransaction.setAmount(payment.getAmount() * 0.5f);
+//                    refundTransaction.setStatus("completed");
+//                    refundTransaction.setType("refund");
+//                    refundTransaction.setTransaction_time(LocalDateTime.now());
+//                    refundTransaction.setPayment(payment);
+//                    transactionRepository.save(refundTransaction);
+//                    payment.setStatus("completed");
+//                    paymentRepository.save(payment);
+//                }
             } else {
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
