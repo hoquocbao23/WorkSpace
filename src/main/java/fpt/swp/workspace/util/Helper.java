@@ -17,7 +17,8 @@ public class Helper {
 
     public static String convertLocalDateTime(){
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+       DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        //String creationTime = now.toString();
         String creationTime = now.format(formatter);
         return creationTime;
     }
