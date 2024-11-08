@@ -54,14 +54,12 @@ public class ApplicationConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    @Value("${aws.s3.secret.key}")
-    private String awsSecretKey;         // Secret key
 
-    @Value("${aws.s3.access.key}")
-    private String awsAccessKey;
 
     @Bean
     public AmazonS3 s3Client(){
+        String awsAccessKey = dotenv.get("AWS_ACCESS_KEY");
+        String awsSecretKey = dotenv.get("AWS_SECRET_KEY");
         BasicAWSCredentials awsCredentials = new BasicAWSCredentials(awsAccessKey, awsSecretKey);
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
