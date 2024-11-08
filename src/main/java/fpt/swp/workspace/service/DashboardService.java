@@ -6,6 +6,7 @@ import fpt.swp.workspace.models.OrderBooking;
 import fpt.swp.workspace.models.User;
 import fpt.swp.workspace.repository.OrderBookingRepository;
 import fpt.swp.workspace.repository.RoomRepository;
+import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -303,7 +304,7 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO getRevenue(String token) {
+    public DashboardDTO getRevenue(String token) throws AopInvocationException {
         User user = authService.getUser(token);
         DashboardDTO dashboardDTO = new DashboardDTO();
         // Lấy ngày hiện tại
@@ -324,7 +325,7 @@ public class DashboardService implements IDashboardService {
         float revenue = 0.0f;
         if (user.getManager() != null) {
             String buildingId = user.getManager().getBuildingId();
-             revenue = orderBookingRepository.getRevenue(starMonth,endMonth,buildingId, BookingStatus.CANCELLED);
+            revenue = orderBookingRepository.getRevenue(starMonth,endMonth,buildingId, BookingStatus.CANCELLED);
             dashboardDTO.setRevenue(revenue);
         }
         return dashboardDTO;
@@ -538,7 +539,8 @@ public class DashboardService implements IDashboardService {
     }
 
     @Override
-    public DashboardDTO getRevenueOwner(String buildingId) {
+    public DashboardDTO getRevenueOwner(String buildingId) throws AopInvocationException {
+        System.out.println(buildingId);
         DashboardDTO dashboardDTO = new DashboardDTO();
         // Lấy ngày hiện tại
         LocalDate today = LocalDate.now();
@@ -552,7 +554,9 @@ public class DashboardService implements IDashboardService {
         String starMonth = startOfMonth.toString();
         String endMonth = endOfMonth.toString();
         float revenue = 0.0f;
-        revenue = orderBookingRepository.getRevenue(starMonth,endMonth,buildingId, BookingStatus.CANCELLED);
+        revenue = orderBookingRepository.getRevenue(starMonth, endMonth, buildingId, BookingStatus.CANCELLED);
+        System.out.println(revenue);
+
         dashboardDTO.setRevenue(revenue);
         return dashboardDTO;
     }

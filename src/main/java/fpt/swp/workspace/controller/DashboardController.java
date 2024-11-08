@@ -2,6 +2,7 @@ package fpt.swp.workspace.controller;
 
 import fpt.swp.workspace.response.ResponseHandler;
 import fpt.swp.workspace.service.DashboardService;
+import org.springframework.aop.AopInvocationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +70,11 @@ public class DashboardController {
     @GetMapping("/revenue")
     public ResponseEntity<Object> getMonthlyRevenue(@RequestHeader("Authorization") String token) {
         String jwt = token.substring(7);
-        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getRevenue(jwt));
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getRevenue(jwt));
+        }catch (AopInvocationException e){
+            return ResponseHandler.responseBuilder("Chưa có doanh thu", HttpStatus.OK);
+        }
     }
 
     // owner
@@ -80,7 +85,6 @@ public class DashboardController {
 
     @GetMapping("owner/total-booking-in-week/{buildingId}")
     public ResponseEntity<Object> totalBookingInWeekOwner(@PathVariable("buildingId") String buildinggId) {
-
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getTotalBookingInWeekOwner(buildinggId));
     }
 
@@ -131,7 +135,12 @@ public class DashboardController {
 
     @GetMapping("owner/revenue/{buildingId}")
     public ResponseEntity<Object> getMonthlyRevenueByOwner(@PathVariable("buildingId") String buildinggId) {
-        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getRevenueOwner(buildinggId));
+        try{
+            return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getRevenueOwner(buildinggId));
+        }catch (AopInvocationException e){
+            return ResponseHandler.responseBuilder("Chưa có doanh thu", HttpStatus.OK);
+        }
+
     }
 
 
