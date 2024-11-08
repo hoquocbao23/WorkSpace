@@ -1,11 +1,13 @@
 package fpt.swp.workspace.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fpt.swp.workspace.auth.AuthenticationResponse;
 import fpt.swp.workspace.auth.LoginRequest;
 import fpt.swp.workspace.auth.RegisterRequest;
 import fpt.swp.workspace.service.AuthService;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,10 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,26 +49,32 @@ public class CustomerControllerTest extends AbstractTestNGSpringContextTests {
     // STEPS/PROCEDURES: CALL register() WITH ARG registerRequest INCLUDING username, password, fullName, phoneNumber, and role.
     // EXPECTED RESULT: RETURN HTTP STATUS CODE 200 AND STATUS CODE 200.
 
-//    @Test
-//    public void register_ShouldReturnOK_WhenValidRequest() throws Exception {
-//        // Tạo một yêu cầu đăng ký hợp lệ
-//        RegisterRequest registerRequest = new RegisterRequest();
-//        registerRequest.setUserName("bao02");
-//        registerRequest.setPassword("123456");
-//        registerRequest.setFullName("Quoc Bao");
-//        registerRequest.setPhoneNumber("091273485");
-//        registerRequest.setRole("CUSTOMER");
-//
-//        // Chuyển request thành JSON
-//        String requestJson = objectMapper.writeValueAsString(registerRequest);
-//
-//        // Thực hiện POST request và kiểm tra phản hồi
-//        mockMvc.perform(post("/api/auth/register")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(requestJson))
-//                .andExpect(status().isOk()) // Kiểm tra mã trạng thái HTTP là 200
-//                .andExpect(jsonPath("$.statusCode").value(200));
-//    }
+    @Test
+    public void register_ShouldReturnOK_WhenValidRequest() throws Exception {
+        // Tạo một yêu cầu đăng ký hợp lệ
+        RegisterRequest registerRequest = new RegisterRequest();
+        registerRequest.setUserName("bao03");
+        registerRequest.setPassword("123456");
+        registerRequest.setFullName("Quoc Bao");
+        registerRequest.setPhoneNumber("091273485");
+        registerRequest.setRole("CUSTOMER");
+
+        // Chuyển request thành JSON
+        String requestJson = objectMapper.writeValueAsString(registerRequest);
+
+        AuthenticationResponse mockResponse = new AuthenticationResponse();
+        mockResponse.setStatusCode(200);
+        mockResponse.setMessage("Registration successful");
+
+
+
+        // Thực hiện POST request và kiểm tra phản hồi
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk()) // Kiểm tra mã trạng thái HTTP là 200
+                .andExpect(jsonPath("$.statusCode").value(200));
+    }
 
 
     // TEST CASE 02
@@ -94,7 +105,7 @@ public class CustomerControllerTest extends AbstractTestNGSpringContextTests {
     // STEPS/PROCEDURES: CALL login() WITH ARG loginRequest INCLUDING valid username and password.
     // EXPECTED RESULT: RETURN HTTP STATUS CODE 200 AND roleName "CUSTOMER".
 
-    @Test
+    @Test(dependsOnMethods = "register_ShouldReturnOK_WhenValidRequest")
     public void login_ShouldReturnOK_WhenValidLogin() throws Exception {
 
 
@@ -144,19 +155,22 @@ public class CustomerControllerTest extends AbstractTestNGSpringContextTests {
     public void login_ShouldReturnNullPointerException_WhenUserNotFound() throws Exception {
         // Tạo yêu cầu login không tồn tại
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUserName("bao1");
+        loginRequest.setUserName("bao2");
         loginRequest.setPassword("123456");
 
         String requestJson = objectMapper.writeValueAsString(loginRequest);
 
-        //authService.login(loginRequest);
-//        assertThrows(NullPointerException.class, () -> authService.login(loginRequest));
+        NullPointerException exception = Assert.expectThrows(NullPointerException.class, () -> authService.login(loginRequest));
+        Assert.assertEquals(exception.getMessage(), "Username hoặc password không đúng", "Exception message should match expected message");
 
-//        mockMvc.perform(post("/api/auth/login")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content(requestJson))
-//                .andExpect(status().isNotFound()) // Kiểm tra mã trạng thái HTTP 404
-//                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NullPointerException)); // Kiểm tra nếu có NullPointerException
+//        try {
+//            authService.login(loginRequest);
+//            Assert.fail("Expected NullPointerException to be thrown");
+//        } catch (NullPointerException e) {
+//            // Verify that the exception message is as expected
+//            Assert.assertEquals(e.getMessage(), "Username hoặc password không đúng");
+//        }
+
     }
 
     // TEST CASE 06

@@ -302,6 +302,34 @@ public class DashboardService implements IDashboardService {
         return dashboardDTO;
     }
 
+    @Override
+    public DashboardDTO getRevenue(String token) {
+        User user = authService.getUser(token);
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        // Lấy ngày hiện tại
+        LocalDate today = LocalDate.now();
+
+        // Lấy năm và tháng hiện tại
+        int year = today.getYear();
+        Month month = today.getMonth();
+
+        // Ngày đầu của tháng
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        // Ngày cuối của tháng
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+
+        String starMonth = startOfMonth.toString();
+        String endMonth = endOfMonth.toString();
+
+        float revenue = 0.0f;
+        if (user.getManager() != null) {
+            String buildingId = user.getManager().getBuildingId();
+             revenue = orderBookingRepository.getRevenue(starMonth,endMonth,buildingId, BookingStatus.CANCELLED);
+            dashboardDTO.setRevenue(revenue);
+        }
+        return dashboardDTO;
+    }
+
     // -- OWNER --
     @Override
     public DashboardDTO getTotalBookingInDateOwner(String buildingId) {
@@ -442,13 +470,9 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public DashboardDTO bookingAnalystByDateOwner(String buildingId) {
-
         List<OrderBooking> listOrder;
         Map<String, Integer> booking = new HashMap<>();
-
         listOrder = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), buildingId);
-
-
         for (OrderBooking order : listOrder) {
             String status = order.getStatus().toString();
             if (booking.containsKey(status)) {
@@ -510,6 +534,26 @@ public class DashboardService implements IDashboardService {
         }
         DashboardDTO dashboardDTO = new DashboardDTO();
         dashboardDTO.setBookingAnalyst(booking);
+        return dashboardDTO;
+    }
+
+    @Override
+    public DashboardDTO getRevenueOwner(String buildingId) {
+        DashboardDTO dashboardDTO = new DashboardDTO();
+        // Lấy ngày hiện tại
+        LocalDate today = LocalDate.now();
+        // Lấy năm và tháng hiện tại
+        int year = today.getYear();
+        Month month = today.getMonth();
+        // Ngày đầu của tháng
+        LocalDate startOfMonth = LocalDate.of(year, month, 1);
+        // Ngày cuối của tháng
+        LocalDate endOfMonth = startOfMonth.withDayOfMonth(startOfMonth.lengthOfMonth());
+        String starMonth = startOfMonth.toString();
+        String endMonth = endOfMonth.toString();
+        float revenue = 0.0f;
+        revenue = orderBookingRepository.getRevenue(starMonth,endMonth,buildingId, BookingStatus.CANCELLED);
+        dashboardDTO.setRevenue(revenue);
         return dashboardDTO;
     }
 

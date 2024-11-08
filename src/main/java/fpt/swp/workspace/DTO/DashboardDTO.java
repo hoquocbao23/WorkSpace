@@ -13,6 +13,7 @@ public class DashboardDTO {
     private int totalFreeSpace;
     private int totalBookingSlot;
     private int totalRoom;
+    private float revenue;
     private Map<String, Integer> roomTypeAnalyst;
     private Map<String, Integer> bookingAnalyst;
 

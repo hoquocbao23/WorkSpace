@@ -66,6 +66,11 @@ public class DashboardController {
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.bookingAnalystByMonth(jwt));
     }
 
+    @GetMapping("/revenue")
+    public ResponseEntity<Object> getMonthlyRevenue(@RequestHeader("Authorization") String token) {
+        String jwt = token.substring(7);
+        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getRevenue(jwt));
+    }
 
     // owner
     @GetMapping("owner/total-booking-in-date/{buildingId}")
@@ -122,6 +127,11 @@ public class DashboardController {
     public ResponseEntity<Object> bookingAnalystMonthOwner(@PathVariable("buildingId") String buildinggId) {
 
         return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.bookingAnalystByMonthOwner(buildinggId));
+    }
+
+    @GetMapping("owner/revenue/{buildingId}")
+    public ResponseEntity<Object> getMonthlyRevenueByOwner(@PathVariable("buildingId") String buildinggId) {
+        return ResponseHandler.responseBuilder("Ok", HttpStatus.OK, dashboardService.getRevenueOwner(buildinggId));
     }
 
 

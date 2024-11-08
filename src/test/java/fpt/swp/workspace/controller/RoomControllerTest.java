@@ -1,7 +1,9 @@
 package fpt.swp.workspace.controller;
 
 import com.amazonaws.services.kms.model.NotFoundException;
+import fpt.swp.workspace.models.OrderBooking;
 import fpt.swp.workspace.models.Room;
+import fpt.swp.workspace.repository.RoomRepository;
 import fpt.swp.workspace.service.RoomService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -9,14 +11,17 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,6 +39,9 @@ public class RoomControllerTest  extends AbstractTestNGSpringContextTests {
     @InjectMocks
     private RoomController roomController; // Controller
 
+    @Mock
+    private RoomRepository roomRepository;
+
     @BeforeMethod
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -45,32 +53,34 @@ public class RoomControllerTest  extends AbstractTestNGSpringContextTests {
     // STEPS/PROCEDURES: CALL addNewRoomImg() WITH VALID PARAMETERS INCLUDING A MOCK IMAGE FILE.
     // EXPECTED RESULT: RETURN HTTP STATUS CODE 200 AND THE MESSAGE "Them phong thanh cong".
 
-//    @Test
-//    public void addNewRoomImg_ShouldReturnOK_WhenValidRequest() throws Exception {
-//        // Tạo một tệp hình ảnh giả lập
-//        MockMultipartFile imageFile = new MockMultipartFile("image", "room.jpg", "image/jpeg", "image content".getBytes());
-//
-//        // Giả lập hành vi của roomService
-//        Room mockRoom = new Room(); // Tạo một Room giả lập
-//        mockRoom.setRoomId("1");
-//
-//        // Giả lập phương thức roomService.addNewRoomImg
-//        when(roomService.addNewRoomImg(anyString(), anyString(), anyString(), anyString(), any(), any(), anyString(), anyString()))
-//                .thenReturn(mockRoom);
-//
-//        // Thực hiện yêu cầu POST đến /manager/add-new-room-img
-//        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/manager/add-new-room-img")
-//                        .file(imageFile) // Gửi tệp hình ảnh
-//                        .param("buildingId", "BD001")
-//                        .param("roomTypeId", "RT001")
-//                        .param("roomName", "Conference Room")
-//                        .param("price", "100")
-//                        .param("status", "Available")
-//                        .param("description", "A spacious conference room")
-//                        .param("listStaffID", ""))
-//                .andExpect(status().isOk()) // Kiểm tra mã trạng thái 200
-//                .andExpect(jsonPath("$.message").value("Them phong thanh cong")); // Kiểm tra thông điệp
-//    }
+    @Test
+    public void addNewRoomImg_ShouldReturnOK_WhenValidRequest() throws Exception {
+        // Tạo một tệp hình ảnh giả lập
+        MockMultipartFile imageFile = new MockMultipartFile("image", "room.jpg", "image/jpeg", "image content".getBytes());
+
+        // Giả lập hành vi của roomService
+        Room mockRoom = new Room(); // Tạo một Room giả lập
+        mockRoom.setRoomId("1");
+
+        // Giả lập phương thức roomService.addNewRoomImg
+        when(roomService.addNewRoomImg(anyString(), anyString(), anyString(), anyString(), any(), any(), anyString(), anyString()))
+                .thenReturn(mockRoom);
+
+        //when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Thực hiện yêu cầu POST đến /manager/add-new-room-img
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/api/manager/add-new-room-img")
+                        .file(imageFile) // Gửi tệp hình ảnh
+                        .param("buildingId", "BD001")
+                        .param("roomTypeId", "RT001")
+                        .param("roomName", "Conference Room")
+                        .param("price", "100")
+                        .param("status", "Available")
+                        .param("description", "A spacious conference room")
+                        .param("listStaffID", ""))
+                .andExpect(status().isOk()) // Kiểm tra mã trạng thái 200
+                .andExpect(jsonPath("$.message").value("Them phong thanh cong")); // Kiểm tra thông điệp
+    }
 
     // TEST CASE 02
     // DESCRIPTION: CHECK THE getAllRoom() METHOD WHEN NO ROOMS ARE AVAILABLE
@@ -100,7 +110,7 @@ public class RoomControllerTest  extends AbstractTestNGSpringContextTests {
         Room room1 = new Room();
         room1.setRoomId("S001");
         room1.setRoomName("Phòng đơn 1");
-        //room1.setPrice(50);
+        room1.setPrice(50);
 
         Room room2 = new Room();
         room2.setRoomId("S002");

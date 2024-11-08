@@ -24,6 +24,8 @@ public interface IDashboardService {
 
     DashboardDTO bookingAnalystByMonth(String token);
 
+    DashboardDTO getRevenue(String token);
+
     // Owner
     DashboardDTO getTotalBookingInDateOwner(String buildingId);
 
@@ -44,4 +46,6 @@ public interface IDashboardService {
     DashboardDTO bookingAnalystByWeekOwner(String buildingId);
 
     DashboardDTO bookingAnalystByMonthOwner(String buildingId);
+
+    DashboardDTO getRevenueOwner(String buildingId);
 }
