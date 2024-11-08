@@ -61,8 +61,8 @@ public class OrderBookingService implements IOrderBookingService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-//    @Autowired
-//    private SimpMessagingTemplate template;
+    @Autowired
+    private SendEmailService sendEmailService;
 
     @Override
     public List<OrderBookingDetailDTO> getBookedSlotByRoomAndDate(String date, String roomId) {
@@ -258,7 +258,7 @@ public class OrderBookingService implements IOrderBookingService {
         LocalDate checkoutDate = LocalDate.parse(checkout);
         //days between checkin - checkout
         long numberDays = ChronoUnit.DAYS.between(checkinDate, checkoutDate) + 1;
-        System.out.println(numberDays);
+        //System.out.println(numberDays);
         float roomPrice = room.getPrice() * countSlot * (int) numberDays;
         float servicePriceTotal = 0.0f;
 
@@ -337,6 +337,7 @@ public class OrderBookingService implements IOrderBookingService {
         wallet.setAmount(wallet.getAmount() - totalPriceWithServices);
         walletRepository.save(wallet);
 
+        sendEmailService.sendHtmlMessage(customer.getEmail());
 
         return result;
     }
@@ -734,6 +735,8 @@ public class OrderBookingService implements IOrderBookingService {
         }
         return orderBookingDetailDTOList;
     }
+
+
 
 
 }

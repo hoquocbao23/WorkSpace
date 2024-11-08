@@ -98,7 +98,9 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
     List<OrderBooking> findBookingsByDate(String booking, String buildingId );
 
 
-    @Query("SELECT b FROM OrderBooking b WHERE  (b.checkinDate <= :checkout AND b.checkoutDate >= :checkin) AND  b.building.buildingId = :buildingId  ")
+    @Query("SELECT b FROM OrderBooking b " +
+            "WHERE  (b.checkinDate <= :checkout AND b.checkoutDate >= :checkin) " +
+            "AND  b.building.buildingId = :buildingId  ")
     List<OrderBooking> findBookingManyDays(@Param("checkin") String checkinDate,
                                                @Param("checkout") String checkoutDate,
                                                @Param("buildingId") String buildingId);
@@ -107,6 +109,14 @@ public interface OrderBookingRepository extends JpaRepository<OrderBooking, Stri
     List<OrderBooking> findBookingManyDaysOwner(@Param("checkin") String checkinDate,
                                            @Param("checkout") String checkoutDate);
 
+    @Query("SELECT SUM(b.totalPrice) FROM OrderBooking b " +
+            "WHERE  (b.checkinDate <= :checkout AND b.checkoutDate >= :checkin ) "+
+            "AND b.building.buildingId = :buildingId " +
+            "AND b.status != :status ")
+    float getRevenue(@Param("checkin") String checkinDate,
+                             @Param("checkout") String checkoutDate,
+                             @Param("buildingId") String buildingId,
+                             @Param("status") BookingStatus status);
 
 
 
