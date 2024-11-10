@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xác Nhận Đặt Phòng</title>
+    <title>Xác Nhận Mua Gói Thành Viên</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .header {
-            background-color: #4CAF50;
+            background-color: #FF9800;
             color: #ffffff;
             text-align: center;
             padding: 20px;
@@ -36,7 +36,7 @@
         }
         .content h2 {
             font-size: 20px;
-            color: #4CAF50;
+            color: #FF9800;
         }
         .content p {
             margin: 10px 0;
@@ -45,7 +45,7 @@
             display: inline-block;
             margin: 20px 0;
             padding: 12px 24px;
-            background-color: #4CAF50;
+            background-color: #FF9800;
             color: #ffffff;
             text-decoration: none;
             font-weight: bold;
@@ -64,18 +64,17 @@
 <body>
     <div class="email-container">
         <div class="header">
-            <h1>Cảm ơn bạn đã đặt phòng!</h1>
+            <h1>Chúc mừng bạn đã mua gói thành viên!</h1>
         </div>
         <div class="content">
             <h2>Xin chào, {{CustomerName}}!</h2>
-            <p>Cảm ơn bạn đã đặt phòng tại chúng tôi! Dưới đây là chi tiết đặt phòng của bạn:</p>
+            <p>Bạn đã mua thành công một gói thành viên với các quyền lợi như sau:</p>
             <ul>
-                <li><strong>Loại phòng:</strong> {{RoomType}}</li>
-                <li><strong>Khung giờ:</strong> {{TimeSlot}}</li>
-                <li><strong>Ngày:</strong> {{BookingDate}}</li>
+                <li><strong>Gói:</strong> {{MembershipPackage}}</li>
+                <li><strong>Ưu đãi:</strong> Giảm giá cho các lần đặt phòng sau</li>
             </ul>
-            <p>Chúng tôi mong được chào đón bạn!</p>
-            <a href="{{BookingDetailsLink}}" class="cta-button">Xem Chi Tiết Đặt Phòng</a>
+            <p>Tận hưởng những lợi ích đặc quyền từ gói thành viên của bạn.</p>
+            <a href="{{MembershipDetailsLink}}" class="cta-button">Xem Chi Tiết Gói Thành Viên</a>
         </div>
         <div class="footer">
             <p>&copy; 2023 Công ty của bạn. Bảo lưu mọi quyền.</p>

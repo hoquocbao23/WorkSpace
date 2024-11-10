@@ -53,7 +53,7 @@ public class CustomerControllerTest extends AbstractTestNGSpringContextTests {
     public void register_ShouldReturnOK_WhenValidRequest() throws Exception {
         // Tạo một yêu cầu đăng ký hợp lệ
         RegisterRequest registerRequest = new RegisterRequest();
-        registerRequest.setUserName("bao03");
+        registerRequest.setUserName("bao!");
         registerRequest.setPassword("123456");
         registerRequest.setFullName("Quoc Bao");
         registerRequest.setPhoneNumber("091273485");
@@ -105,7 +105,7 @@ public class CustomerControllerTest extends AbstractTestNGSpringContextTests {
     // STEPS/PROCEDURES: CALL login() WITH ARG loginRequest INCLUDING valid username and password.
     // EXPECTED RESULT: RETURN HTTP STATUS CODE 200 AND roleName "CUSTOMER".
 
-    @Test(dependsOnMethods = "register_ShouldReturnOK_WhenValidRequest")
+    @Test
     public void login_ShouldReturnOK_WhenValidLogin() throws Exception {
 
 
@@ -155,7 +155,7 @@ public class CustomerControllerTest extends AbstractTestNGSpringContextTests {
     public void login_ShouldReturnNullPointerException_WhenUserNotFound() throws Exception {
         // Tạo yêu cầu login không tồn tại
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUserName("bao2");
+        loginRequest.setUserName("ba");
         loginRequest.setPassword("123456");
 
         String requestJson = objectMapper.writeValueAsString(loginRequest);

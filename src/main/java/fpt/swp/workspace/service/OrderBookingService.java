@@ -591,15 +591,16 @@ public class OrderBookingService implements IOrderBookingService {
     }
 
     @Override
+    @Transactional
     public void cancelOrderBooking(String jwttoken, String orderBookingId) {
         String username = jwtService.extractUsername(jwttoken);
         Customer customer = customerRepository.findCustomerByUsername(username);
 
         OrderBooking orderBooking = orderBookingRepository.findById(orderBookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
-        if (!orderBooking.getCustomer().getUserId().equals(customer.getUserId())) {
-            throw new RuntimeException("Unauthorized access to this booking");
-        }
+//        if (!orderBooking.getCustomer().getUserId().equals(customer.getUserId())) {
+//            throw new RuntimeException("Unauthorized access to this booking");
+//        }
 
         if (!orderBooking.getStatus().equals(BookingStatus.UPCOMING)) {
             throw new RuntimeException("Booking cannot be canceled");
@@ -639,10 +640,10 @@ public class OrderBookingService implements IOrderBookingService {
 //            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
 //           System.out.println("Hours: " + hours);
             LocalDate checkinDate = LocalDate.parse(orderBooking.getCheckinDate());
-            System.out.println(checkinDate);
+
             long days = ChronoUnit.DAYS.between(LocalDate.now(), checkinDate);
-            System.out.println("day:" + days);
-            System.out.println("now" + LocalDate.now());
+            System.out.println("day: " + days);
+            System.out.println("now: " + LocalDate.now());
             if (days > 1) {
                 // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
                 orderBooking.setStatus(BookingStatus.CANCELLED);
@@ -670,7 +671,7 @@ public class OrderBookingService implements IOrderBookingService {
                     payment.setStatus("completed");
                     paymentRepository.save(payment);
                 }
-//            } else if (hours < 24 && hours > 6) {
+//          } else if (hours < 24 && hours > 6) {
 //                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
 //                orderBooking.setStatus(BookingStatus.CANCELLED);
 //                orderBookingRepository.save(orderBooking);
