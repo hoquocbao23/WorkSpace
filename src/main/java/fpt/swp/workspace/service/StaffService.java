@@ -205,7 +205,6 @@ public class StaffService {
     public StaffResponse getStaffById(String staffId) {
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
-
         return modelMapper.map(staff, StaffResponse.class);
     }
 
