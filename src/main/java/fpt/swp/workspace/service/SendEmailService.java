@@ -28,15 +28,15 @@ public class SendEmailService {
         emailSender.send(message);
     }
 
-    public void sendHtmlMessage(String toEmail){
+    public void sendHtmlMessage(String toEmail, String subject, String html){
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try{
             helper.setTo(toEmail);
-            helper.setSubject("XÁC NHẬN ĐẶT PHÒNG.");
+            helper.setSubject(subject);
             try{
-                InputStream inputStream = Objects.requireNonNull(SendEmailService.class.getResourceAsStream("/templates/email-format.html"));
+                InputStream inputStream = Objects.requireNonNull(SendEmailService.class.getResourceAsStream(html));
                 helper.setText(new String(inputStream.readAllBytes(), StandardCharsets.UTF_8), true);
             }catch (IOException e){
                 System.out.println("IOException: " + e.getMessage());

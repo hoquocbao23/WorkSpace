@@ -337,7 +337,7 @@ public class OrderBookingService implements IOrderBookingService {
         wallet.setAmount(wallet.getAmount() - totalPriceWithServices);
         walletRepository.save(wallet);
 
-        sendEmailService.sendHtmlMessage(customer.getEmail());
+        sendEmailService.sendHtmlMessage(customer.getEmail(), "XÁC NHẬN ĐẶT PHÒNG", "/templates/email-format.html");
 
         return result;
     }
