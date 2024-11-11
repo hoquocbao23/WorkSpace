@@ -35,6 +35,8 @@ public class User implements UserDetails  {
 
     private String roleName;
 
+    private String status;
+
 
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

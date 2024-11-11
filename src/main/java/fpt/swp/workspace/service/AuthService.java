@@ -71,6 +71,7 @@ public class AuthService implements IAuthService {
                 newUser.setPassword(passwordEncoder.encode(request.getPassword()));
                 newUser.setCreationTime(LocalDateTime.now());
                 newUser.setRoleName(request.getRole());
+                newUser.setStatus("AVAILABLE");
                 User result = repository.save(newUser);
 
                 // insert to customer table
@@ -224,6 +225,7 @@ public class AuthService implements IAuthService {
             newUser.setPassword(passwordEncoder.encode(password));
             newUser.setCreationTime(LocalDateTime.now());
             newUser.setRoleName(role);
+            newUser.setStatus("AVAILABLE");
             User manager = repository.save(newUser);
 
             Manager newManager = new Manager();
@@ -239,6 +241,7 @@ public class AuthService implements IAuthService {
             newUser.setPassword(passwordEncoder.encode(password));
             newUser.setCreationTime(LocalDateTime.now());
             newUser.setRoleName(role);
+            newUser.setStatus("AVAILABLE");
             User staff = repository.save(newUser);
 
             Staff newStaff = new Staff();
