@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Mua Gói Thành Viên</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #FF9800;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .content h2 {
+            font-size: 20px;
+            color: #FF9800;
+        }
+        .content p {
+            margin: 10px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 24px;
+            background-color: #FF9800;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .footer {
+            background-color: #333333;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Chúc mừng bạn đã mua gói thành viên!</h1>
+        </div>
+        <div class="content">
+            <h2>Xin chào, {{CustomerName}}!</h2>
+            <p>Bạn đã mua thành công một gói thành viên với các quyền lợi như sau:</p>
+            <ul>
+                <li><strong>Gói:</strong> {{MembershipPackage}}</li>
+                <li><strong>Ưu đãi:</strong> Giảm giá cho các lần đặt phòng sau</li>
+            </ul>
+            <p>Tận hưởng những lợi ích đặc quyền từ gói thành viên của bạn.</p>
+            <a href="{{MembershipDetailsLink}}" class="cta-button">Xem Chi Tiết Gói Thành Viên</a>
+        </div>
+        <div class="footer">
+            <p>&copy; 2023 Công ty của bạn. Bảo lưu mọi quyền.</p>
+            <p>Địa chỉ: 1234 Đường Ví dụ, Thành phố, Quốc gia</p>
+            <p><a href="mailto:support@example.com" style="color: #ffffff;">Liên hệ hỗ trợ</a></p>
+        </div>
+    </div>
+</body>
+</html>
