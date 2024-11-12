@@ -15,7 +15,7 @@ public interface IRoomService {
 
     RoomDTO getRoomImg(String roomID);
 
-    List<Room> getAllRooms();
+    List<Room> getAllRooms(String jwt);
 
     List<RoomDTO> getAllRoomsDTO();
 
@@ -23,7 +23,7 @@ public interface IRoomService {
 
     Room getRoomById(String id);
 
-    List<Room> getRoomsByBuildingId(String buildingId);
+    List<Room> getRoomsByBuildingId(String token);
 
     List<RoomDTO> viewRoomsByBuildingId(String buildingId);
 
