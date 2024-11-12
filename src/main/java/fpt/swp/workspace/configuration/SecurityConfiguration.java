@@ -57,6 +57,7 @@ public class SecurityConfiguration {
                 "Access-Control-Request-Method", "Access-Control-Request-Headers"));
         corsConfiguration.addAllowedOrigin("http://localhost:3000");
         corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("https://wsb-deploy-git-main-glanntts-projects.vercel.app"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         corsConfiguration.setAllowCredentials(true);
