@@ -5,7 +5,7 @@ import java.time.LocalTime;
 public enum WorkShift {
 
         MORNING(LocalTime.of(6, 0), LocalTime.of(15, 0)), // 6:00 - 11:00
-        EVENING(LocalTime.of(1, 0), LocalTime.of(23, 0)), // 11:00 - 23:00
+        EVENING(LocalTime.of(15, 0), LocalTime.of(23, 0)), // 11:00 - 23:00
         FULL_TIME(LocalTime.of(6, 0), LocalTime.of(23, 0));
 
         private final LocalTime startTime;

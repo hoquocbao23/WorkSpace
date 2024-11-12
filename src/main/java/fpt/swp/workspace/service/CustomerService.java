@@ -148,7 +148,7 @@ public class CustomerService implements ICustomerService {
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setAmount(amount);
         transaction.setStatus("completed");
-        transaction.setType("buy_membership");
+        transaction.setType("Mua gói thành viên");
         transaction.setTransaction_time(LocalDateTime.now());
         transaction.setPayment(payment);
         transactionRepository.save(transaction);
