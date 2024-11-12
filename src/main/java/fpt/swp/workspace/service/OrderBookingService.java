@@ -17,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -326,7 +327,7 @@ public class OrderBookingService implements IOrderBookingService {
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setAmount(totalPriceWithServices);
         transaction.setStatus("completed");
-        transaction.setType("pay for Order");
+        transaction.setType("Đặt phòng");
         transaction.setTransaction_time(LocalDateTime.now());
         transaction.setPayment(payment);
         // payment.setTransactionId(transaction.getTransactionId());
@@ -565,7 +566,7 @@ public class OrderBookingService implements IOrderBookingService {
             transaction.setTransactionId(UUID.randomUUID().toString());
             transaction.setAmount(totalServicePriceChange);
             transaction.setStatus("completed");
-            transaction.setType("Update Service");
+            transaction.setType("Thay đổi dịch vụ");
             transaction.setTransaction_time(LocalDateTime.now());
             transaction.setPayment(payment);
             paymentRepository.save(payment);
@@ -611,7 +612,7 @@ public class OrderBookingService implements IOrderBookingService {
             throw new RuntimeException("Booking cannot be canceled");
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDate createDate = LocalDateTime.parse(orderBooking.getCreateAt(), formatter).toLocalDate();
         // nếu đặt trong ngày -> huỷ
         if (createDate.equals(LocalDate.parse(orderBooking.getCheckinDate()))) {
@@ -633,7 +634,7 @@ public class OrderBookingService implements IOrderBookingService {
                 refundTransaction.setTransactionId(UUID.randomUUID().toString());
                 refundTransaction.setAmount(payment.getAmount());
                 refundTransaction.setStatus("completed");
-                refundTransaction.setType("refund");
+                refundTransaction.setType("Hoàn tiền");
                 refundTransaction.setTransaction_time(LocalDateTime.now());
                 refundTransaction.setPayment(payment);
                 transactionRepository.save(refundTransaction);
@@ -669,7 +670,7 @@ public class OrderBookingService implements IOrderBookingService {
                     refundTransaction.setTransactionId(UUID.randomUUID().toString());
                     refundTransaction.setAmount(payment.getAmount());
                     refundTransaction.setStatus("completed");
-                    refundTransaction.setType("refund");
+                    refundTransaction.setType("Hoàn tiền");
                     refundTransaction.setTransaction_time(LocalDateTime.now());
                     refundTransaction.setPayment(payment);
                     transactionRepository.save(refundTransaction);
@@ -741,6 +742,8 @@ public class OrderBookingService implements IOrderBookingService {
         }
         return orderBookingDetailDTOList;
     }
+
+
 
 
 
