@@ -642,15 +642,17 @@ public class OrderBookingService implements IOrderBookingService {
                 paymentRepository.save(payment);
             }
         } else {
-//            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
-//            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
-//           System.out.println("Hours: " + hours);
+            LocalTime checkinHour = LocalTime.parse(orderBooking.getSlot().get(0).getTimeStart().toString());
+            long hours = ChronoUnit.HOURS.between(LocalTime.now(), checkinHour);
+            System.out.println("Hours: " + hours);
             LocalDate checkinDate = LocalDate.parse(orderBooking.getCheckinDate());
 
             long days = ChronoUnit.DAYS.between(LocalDate.now(), checkinDate);
             System.out.println("day: " + days);
             System.out.println("now: " + LocalDate.now());
-            if (days > 1) {
+            long tempHours = hours + (days * 24);
+            System.out.println(tempHours);
+            if (tempHours > 24) {
                 // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
@@ -677,34 +679,36 @@ public class OrderBookingService implements IOrderBookingService {
                     payment.setStatus("completed");
                     paymentRepository.save(payment);
                 }
-//          } else if (hours < 24 && hours > 6) {
-//                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
-//                orderBooking.setStatus(BookingStatus.CANCELLED);
-//                orderBookingRepository.save(orderBooking);
-//
-//                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
-//                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
-//
-//                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
-//                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
-//
-//                if (payment.getStatus().equals("completed")) {
-//                    // Hoàn lại tiền vào ví
-//                    wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
-//                    walletRepository.save(wallet);
-//
-//                    Transaction refundTransaction = new Transaction();
-//                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
-//                    refundTransaction.setAmount(payment.getAmount() * 0.5f);
-//                    refundTransaction.setStatus("completed");
-//                    refundTransaction.setType("refund");
-//                    refundTransaction.setTransaction_time(LocalDateTime.now());
-//                    refundTransaction.setPayment(payment);
-//                    transactionRepository.save(refundTransaction);
-//                    payment.setStatus("completed");
-//                    paymentRepository.save(payment);
-//                }
-            } else {
+          } else if (tempHours < 24 && tempHours > 6  ) {
+                System.out.println(tempHours);
+                // nếu huỷ trước 24 tiếng -> huỷ, hoàn tiền 50%
+                orderBooking.setStatus(BookingStatus.CANCELLED);
+                orderBookingRepository.save(orderBooking);
+
+                Payment payment = paymentRepository.findByOrderBookingId(orderBookingId)
+                        .orElseThrow(() -> new RuntimeException("Payment not found for this booking"));
+
+                Wallet wallet = walletRepository.findByUserId(orderBooking.getCustomer().getUserId())
+                        .orElseThrow(() -> new RuntimeException("Wallet not found"));
+
+                if (payment.getStatus().equals("completed")) {
+                    // Hoàn lại tiền vào ví
+                    wallet.setAmount(wallet.getAmount() + (payment.getAmount() * 0.5f));
+                    walletRepository.save(wallet);
+
+                    Transaction refundTransaction = new Transaction();
+                    refundTransaction.setTransactionId(UUID.randomUUID().toString());
+                    refundTransaction.setAmount(payment.getAmount() * 0.5f);
+                    refundTransaction.setStatus("completed");
+                    refundTransaction.setType("Hoàn tiền");
+                    refundTransaction.setTransaction_time(LocalDateTime.now());
+                    refundTransaction.setPayment(payment);
+                    transactionRepository.save(refundTransaction);
+                    payment.setStatus("completed");
+                    paymentRepository.save(payment);
+                }
+            } else if ( tempHours < 6 ) {
+                System.out.println(tempHours);
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
             }

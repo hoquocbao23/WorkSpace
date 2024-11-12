@@ -575,7 +575,7 @@ public class StaffService {
             refundTransaction.setTransactionId(UUID.randomUUID().toString());
             refundTransaction.setAmount(payment.getAmount());
             refundTransaction.setStatus("completed");
-            refundTransaction.setType("refund");
+            refundTransaction.setType("Hoàn tiền cọc");
             refundTransaction.setTransaction_time(LocalDateTime.now());
             refundTransaction.setPayment(payment);
             transactionRepository.save(refundTransaction);
