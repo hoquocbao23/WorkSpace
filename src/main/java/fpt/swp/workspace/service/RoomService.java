@@ -3,10 +3,7 @@ package fpt.swp.workspace.service;
 
 import com.amazonaws.services.kms.model.NotFoundException;
 import fpt.swp.workspace.DTO.RoomDTO;
-import fpt.swp.workspace.models.Building;
-import fpt.swp.workspace.models.Room;
-import fpt.swp.workspace.models.RoomType;
-import fpt.swp.workspace.models.Staff;
+import fpt.swp.workspace.models.*;
 import fpt.swp.workspace.repository.BuildingRepository;
 import fpt.swp.workspace.repository.RoomRepository;
 import fpt.swp.workspace.repository.RoomTypeRepository;
@@ -38,6 +35,9 @@ public class RoomService implements IRoomService{
 
     @Autowired
     private RoomTypeRepository roomTypeRepository;
+
+    @Autowired
+    private AuthService authService;
 
 
     @Override
@@ -110,12 +110,18 @@ public class RoomService implements IRoomService{
         room.setCreationTime(creationTime);
 
         // conver array to string
-        List<Staff> staffList = new ArrayList<>();
-        for(String staffID : staffIdList) {
-            Staff staff = staffRepository.findById(staffID).get();
-            staffList.add(staff);
+
+        if (staffIdList == null ){
+            room.setStaff(new ArrayList<>());
+        }else{
+            List<Staff> staffList = new ArrayList<>();
+            for(String staffID : staffIdList) {
+                Staff staff = staffRepository.findById(staffID).get();
+                staffList.add(staff);
+            }
+            room.setStaff(staffList);
         }
-        room.setStaff(staffList);
+
 
         room.setStatus(status);
         room.setBuilding(findBuilding);
@@ -152,15 +158,13 @@ public class RoomService implements IRoomService{
 
 
     @Override
-    public List<Room> getAllRooms() {
-        List<Room> roomList = roomRepository.findAll();
-        try {
+    public List<Room> getAllRooms(String jwt) {
+        User user = authService.getUser(jwt);
+        List<Room> roomList = roomRepository.getRoomByBuilding(user.getManager().getBuildingId());
             if (roomList.isEmpty()) {
                 throw new NotFoundException("Chua co phong nao!!!");
             }
-        } catch(NotFoundException e) {
 
-        }
         return roomList;
     }
 
@@ -204,7 +208,6 @@ public class RoomService implements IRoomService{
             throw new NotFoundException("Co so nay chua co phong");
         }
         return roomList;
-
     }
 
     @Override

@@ -16,7 +16,7 @@ public class BuildingService {
 
     public Building createBuilding(BuildingRequest request) {
         Building building = new Building();
-        building.setBuildingId(UUID.randomUUID().toString());
+        building.setBuildingId(generateBuildingId());
         building.setBuildingName(request.getBuildingName());
         building.setBuildingLocation(request.getBuildingLocation());
         building.setPhoneContact(request.getPhoneContact());
@@ -54,5 +54,18 @@ public class BuildingService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy building"));
 
         buildingRepository.delete(building);
+    }
+
+
+    public String generateBuildingId() {
+        // Query the latest building and extract their ID to increment
+        long lastedBuildingId = buildingRepository.count();
+        if (lastedBuildingId != 0) {
+
+            long newId = lastedBuildingId + 1;
+            return "BD" + String.format("%03d", newId); // Format to 4 digits
+        } else {
+            return "BD001"; // Start from BD001 if no building exist
+        }
     }
 }
