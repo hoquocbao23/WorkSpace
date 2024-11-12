@@ -412,18 +412,36 @@ public class StaffService {
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void updateBookingStatusSocket() {
+        // Lấy toàn bộ booking
         List<OrderBooking> orderBookingList = orderBookingRepository.findAll();
         LocalDate today = LocalDate.now();
+
+        // duyệt qua từng booking
         for (OrderBooking orderBooking : orderBookingList) {
+            // Cancel toàn bộ những booking đã qua ngày
             if (today.isAfter(LocalDate.parse(orderBooking.getCheckinDate())) && orderBooking.getStatus().toString().equals(BookingStatus.UPCOMING.toString())) {
                 orderBooking.setStatus(BookingStatus.CANCELLED);
                 orderBookingRepository.save(orderBooking);
                 simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
-            } else {
+            } else  {
+
                 List<TimeSlot> timeSlots = orderBooking.getSlot();
                 for (TimeSlot timeSlot : timeSlots) {
+                    // nếu tới ngày check in, đã qua 15p, mà không check in thì huỷ
                     if (ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeStart().toString()), LocalTime.now()) > 15) {
                         orderBooking.setStatus(BookingStatus.CANCELLED);
+                        orderBookingRepository.save(orderBooking);
+                        // Send the update to WebSocket clients
+                        simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
+
+                        // tự động hoàn thành những đơn đang sử dụng, đã sử dụng xong.
+                        // today = checkin date
+                        // now - end time > 1p
+                        // status = USing
+                    }else if (today.equals(LocalDate.parse(orderBooking.getCheckinDate()))
+                                && ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeEnd().toString()), LocalTime.now()) > 1
+                                && orderBooking.getStatus().toString().equals(BookingStatus.USING.toString()) ){
+                        orderBooking.setStatus(BookingStatus.FINISHED);
                         orderBookingRepository.save(orderBooking);
                         // Send the update to WebSocket clients
                         simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
