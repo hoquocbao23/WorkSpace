@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html xmlns:th="https://www.thymeleaf.org" lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,15 +68,20 @@
             <h1>Cảm ơn bạn đã đặt phòng!</h1>
         </div>
         <div class="content">
-            <h2>Xin chào, {{CustomerName}}!</h2>
+            <h2 th:text="'Xin chào ' + ${customer.fullName}"/>
             <p>Cảm ơn bạn đã đặt phòng tại chúng tôi! Dưới đây là chi tiết đặt phòng của bạn:</p>
             <ul>
-                <li><strong>Loại phòng:</strong> {{RoomType}}</li>
-                <li><strong>Khung giờ:</strong> {{TimeSlot}}</li>
-                <li><strong>Ngày:</strong> {{BookingDate}}</li>
+                <li th:text="'Loại phòng: ' + ${roomType}"></li>
+                <li th:text="'Ngày Nhận: ' + ${checkinDate}"> </li>
+                <li th:text="'Ngày Trả: ' + ${checkoutDate}"> </li>
+                <li>
+                    Khung giờ:
+                    <ol th:each="slot: ${timeSlot}" th:text="${slot.timeStart} + ' - ' + ${slot.timeEnd}"></ol>
+                </li>
+                <li th:text="'Tổng tiền: ' + ${totalPrice}"> </li>
             </ul>
             <p>Chúng tôi mong được chào đón bạn!</p>
-            <a href="{{BookingDetailsLink}}" class="cta-button">Xem Chi Tiết Đặt Phòng</a>
+            <a href="https://github.com/hoquocbao23/workspace" class="cta-button">Xem Chi Tiết Đặt Phòng</a>
         </div>
         <div class="footer">
             <p>&copy; 2023 Công ty của bạn. Bảo lưu mọi quyền.</p>
@@ -83,5 +89,6 @@
             <p><a href="mailto:support@example.com" style="color: #ffffff;">Liên hệ hỗ trợ</a></p>
         </div>
     </div>
+
 </body>
 </html>

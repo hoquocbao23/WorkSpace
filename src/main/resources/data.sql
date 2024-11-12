@@ -34,11 +34,11 @@ INSERT INTO timeslot(time_slot_id, status, time_start, time_end) VALUES (3, 'AVA
 INSERT INTO timeslot(time_slot_id, status, time_start, time_end) VALUES (4, 'AVAILABLE', '19:00:00.000000', '22:00:00.000000');
 
 -- USER --
-INSERT INTO user (user_id, password, role_name, username) VALUES ('OWN001', '$2a$10$923vpnosP9l1xDmLPXXph.3h5H4mUWmgSKSbXiEalfplWwpuyCraC', 'OWNER', 'owner1s' );
-INSERT INTO user (user_id, password, role_name, username) VALUES ('MA001', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'MANAGER', 'ma01' );
-INSERT INTO user (user_id, password, role_name, username) VALUES ('MA002', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'MANAGER', 'ma02' );
-INSERT INTO user (user_id, password, role_name, username) VALUES ('ST01', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'STAFF', 'st01' );
-INSERT INTO user (user_id, password, role_name, username) VALUES ('ST02', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'STAFF', 'st02' );
+INSERT INTO user (user_id, password, role_name, username, status, creation_time) VALUES ('OWN001', '$2a$10$923vpnosP9l1xDmLPXXph.3h5H4mUWmgSKSbXiEalfplWwpuyCraC', 'OWNER', 'owner1s', 'AVAILABLE', '2024-11-09 13:45:46.776900' );
+INSERT INTO user (user_id, password, role_name, username, status, creation_time) VALUES ('MA001', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'MANAGER', 'ma01', 'AVAILABLE','2024-11-09 13:40:46.776900' );
+INSERT INTO user (user_id, password, role_name, username, status, creation_time) VALUES ('MA002', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'MANAGER', 'ma02', 'AVAILABLE','2024-11-09 13:43:46.776900' );
+INSERT INTO user (user_id, password, role_name, username, status, creation_time) VALUES ('ST01', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'STAFF', 'st01', 'AVAILABLE', '2024-11-09 13:35:46.776900' );
+INSERT INTO user (user_id, password, role_name, username, status, creation_time) VALUES ('ST02', '$2a$10$9pBfv0jKNAdzV9ipro0jweN22CUDDFnMYCtwlNxxXHoqITqCuMUkm', 'STAFF', 'st02', 'AVAILABLE', '2024-11-09 13:10:46.776900' );
 
 -- STAFF --
 INSERT INTO staff ( date_of_birth, phone_number, work_shift, email, full_name, work_days, building_wsid, user_id, status, role_name)

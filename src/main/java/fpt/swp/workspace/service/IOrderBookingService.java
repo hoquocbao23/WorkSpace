@@ -5,6 +5,8 @@ import fpt.swp.workspace.DTO.CustomerServiceDTO;
 import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
 import fpt.swp.workspace.models.BookingStatus;
 import fpt.swp.workspace.models.OrderBooking;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -22,7 +24,7 @@ public interface IOrderBookingService {
 
     OrderBooking createOrderBookingWithout(String jwttoken, String buildingId, String roomId, String checkin, String checkout, Integer[] slotBooking, String note);
 
-    OrderBooking createMultiOrderBooking(String jwttoken, String buildingId, String roomId, String checkin, String checkout, List<Integer> slotBooking, MultiValueMap<Integer, Integer> items, String note);
+    OrderBooking createMultiOrderBooking(String jwttoken, String buildingId, String roomId, String checkin, String checkout, List<Integer> slotBooking, MultiValueMap<Integer, Integer> items, String note, Model model);
 
     List<OrderBookingDetailDTO> getCustomerHistoryBooking(String jwttoken);
 

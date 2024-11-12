@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -110,10 +111,11 @@ public class CustomerController {
 
     @PostMapping("customer/buy/membership")
     public ResponseEntity<String> buyMembership(@RequestHeader("Authorization") String token,
-                                                @RequestParam String membershipId) {
+                                                @RequestParam String membershipId,
+                                                Model model) {
         String jwtToken = token.substring(7);
         try {
-            String result = customerService.buyMembership(jwtToken, membershipId);
+            String result = customerService.buyMembership(jwtToken, membershipId, model);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
