@@ -7,17 +7,16 @@ import fpt.swp.workspace.models.*;
 import fpt.swp.workspace.repository.*;
 
 import fpt.swp.workspace.util.Helper;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.cglib.core.Local;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -226,7 +225,7 @@ public class OrderBookingService implements IOrderBookingService {
 
     @Override
     @Transactional
-    public OrderBooking createMultiOrderBooking(String jwttoken, String buildingId, String roomId, String checkin, String checkout, List<Integer> slotBooking, MultiValueMap<Integer, Integer> items, String note) {
+    public OrderBooking createMultiOrderBooking(String jwttoken, String buildingId, String roomId, String checkin, String checkout, List<Integer> slotBooking, MultiValueMap<Integer, Integer> items, String note, Model model ) {
         String username = jwtService.extractUsername(jwttoken);
         Customer customer = customerRepository.findCustomerByUsername(username);
 
@@ -337,8 +336,14 @@ public class OrderBookingService implements IOrderBookingService {
         wallet.setAmount(wallet.getAmount() - totalPriceWithServices);
         walletRepository.save(wallet);
 
-        sendEmailService.sendHtmlMessage(customer.getEmail(), "XÁC NHẬN ĐẶT PHÒNG", "/templates/email-format.html");
-
+        // send Email
+        model.addAttribute("customer", customer);
+        model.addAttribute("roomType", result.getRoom().getRoomType().getRoomTypeName());
+        model.addAttribute("timeSlot", result.getSlot());
+        model.addAttribute("checkinDate", checkinDate);
+        model.addAttribute("checkoutDate", checkoutDate);
+        model.addAttribute("totalPrice", totalPriceWithServices);
+        sendEmailService.sendThymleafMessage(customer.getEmail(), "XÁC NHẬN ĐẶT PHÒNG", "email-format.html", model);
         return result;
     }
 

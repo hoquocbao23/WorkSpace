@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html xmlns:th="https://www.thymeleaf.org" lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -67,11 +67,11 @@
             <h1>Chúc mừng bạn đã mua gói thành viên!</h1>
         </div>
         <div class="content">
-            <h2>Xin chào, {{CustomerName}}!</h2>
+            <h2 th:text="'Xin chào ' + ${customer.fullName}" ></h2>
             <p>Bạn đã mua thành công một gói thành viên với các quyền lợi như sau:</p>
             <ul>
-                <li><strong>Gói:</strong> {{MembershipPackage}}</li>
-                <li><strong>Ưu đãi:</strong> Giảm giá cho các lần đặt phòng sau</li>
+                <li th:text="'Gói: ' + ${membership}"><strong>Gói:</strong> {{MembershipPackage}}</li>
+                <li th:text="'Ưu đãi: ' + ${discount} +'%'"><strong>Ưu đãi:</strong> Giảm giá cho các lần đặt phòng sau</li>
             </ul>
             <p>Tận hưởng những lợi ích đặc quyền từ gói thành viên của bạn.</p>
             <a href="{{MembershipDetailsLink}}" class="cta-button">Xem Chi Tiết Gói Thành Viên</a>
