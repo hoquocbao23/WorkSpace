@@ -66,7 +66,6 @@ public class ApplicationConfiguration {
                 .withRegion(Regions.US_EAST_2)
                 .build();
         return s3Client;
-
     }
 
     @Bean
