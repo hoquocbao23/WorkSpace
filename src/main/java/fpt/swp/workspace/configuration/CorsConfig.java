@@ -33,6 +33,7 @@ public class CorsConfig extends OncePerRequestFilter {
         response.addHeader("Access-Control-Allow-Headers",
                 "Origin, Content-Type, Accept, Authorization, X-Requested-With");
         response.addHeader("Access-Control-Expose-Headers", "xsrf-token");
+        response.addHeader("Access-Control-Allow-Credentials", "true");
         if("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
         }else {
