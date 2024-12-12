@@ -2,12 +2,16 @@ package fpt.swp.workspace.controller;
 
 import fpt.swp.workspace.DTO.BookedSlotDTO;
 import fpt.swp.workspace.DTO.OrderBookingDetailDTO;
+import fpt.swp.workspace.models.Customer;
 import fpt.swp.workspace.models.OrderBooking;
 import fpt.swp.workspace.response.ResponseHandler;
 import fpt.swp.workspace.service.IOrderBookingService;
+import fpt.swp.workspace.service.SendEmailService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +25,9 @@ public class OrderBookingController {
 
     @Autowired
     private IOrderBookingService orderBookingService;
+
+    @Autowired
+    private SendEmailService sendEmailService;
 
 
 
@@ -114,7 +121,8 @@ public class OrderBookingController {
                                                      @RequestParam("checkoutDate") String checkoutDate,
                                                      @RequestParam("slots") List<Integer> slots,
                                                      @RequestParam(required = false) MultiValueMap<String, String> items,
-                                                     @RequestParam(value = "note", required = false) String note) {
+                                                     @RequestParam(value = "note", required = false) String note,
+                                                     Model model ) {
         String jwtToken = token.substring(7);
 
         MultiValueMap<Integer, Integer> convertedItems = new LinkedMultiValueMap<>();
@@ -133,7 +141,8 @@ public class OrderBookingController {
             }
         }
         try{
-            OrderBooking bookingResponse = orderBookingService.createMultiOrderBooking(jwtToken, buildingId, roomId, checkInDate, checkoutDate, slots, convertedItems, note);
+            OrderBooking bookingResponse = orderBookingService.createMultiOrderBooking(jwtToken, buildingId, roomId, checkInDate, checkoutDate, slots, convertedItems, note, model);
+
             return ResponseHandler.responseBuilder("ok", HttpStatus.CREATED, bookingResponse);
         }catch (RuntimeException e) {
             return ResponseHandler.responseBuilder(e.getMessage(), HttpStatus.BAD_REQUEST);

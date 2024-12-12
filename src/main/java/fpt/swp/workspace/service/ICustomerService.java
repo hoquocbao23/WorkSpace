@@ -2,6 +2,7 @@ package fpt.swp.workspace.service;
 
 import fpt.swp.workspace.models.Customer;
 import fpt.swp.workspace.models.Wallet;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface ICustomerService {
@@ -16,5 +17,5 @@ public interface ICustomerService {
 
     Wallet getWalletByUserId(String userId);
 
-    String buyMembership(String token, String memberShipId);
+    String buyMembership(String token, String memberShipId, Model model);
 }

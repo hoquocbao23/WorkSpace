@@ -90,8 +90,9 @@ public class RoomController {
 
 
     @GetMapping("/get-all-room")
-    public ResponseEntity<Object> getAllRoom(){
-        List<Room> roomList = roomService.getAllRooms();
+    public ResponseEntity<Object> getAllRoom(@RequestHeader("Authorization") String token){
+        String jwt = token.substring(7);
+        List<Room> roomList = roomService.getAllRooms(jwt);
         if (roomList.isEmpty()){
             return ResponseHandler.responseBuilder("Khong co phong . Vui long them phong", HttpStatus.NO_CONTENT);
         }

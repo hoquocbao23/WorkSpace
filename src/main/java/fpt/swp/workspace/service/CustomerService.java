@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,9 @@ public class CustomerService implements ICustomerService {
 
     @Autowired
     private MembershipRepository membershipRepository;
+
+    @Autowired
+    private SendEmailService sendEmailService;
 
     @Override
     public Customer getCustomerProfile(String token) {
@@ -109,7 +113,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     @Transactional
-    public String buyMembership(String token, String memberShipId) {
+    public String buyMembership(String token, String memberShipId, Model model) {
         String username = jwtService.extractUsername(token);
         Customer customer = customerRepository.findCustomerByUsername(username);
         if (customer.getMembership() != null) {
@@ -144,10 +148,16 @@ public class CustomerService implements ICustomerService {
         transaction.setTransactionId(UUID.randomUUID().toString());
         transaction.setAmount(amount);
         transaction.setStatus("completed");
-        transaction.setType("buy_membership");
+        transaction.setType("Mua gói thành viên");
         transaction.setTransaction_time(LocalDateTime.now());
         transaction.setPayment(payment);
         transactionRepository.save(transaction);
+
+        // Send email
+        model.addAttribute("customer", customer);
+        model.addAttribute("membership", memberShipId);
+        model.addAttribute("discount", membership.getDiscount() * 100);
+        sendEmailService.sendThymleafMessage(customer.getEmail(), "Xác nhận mua gói", "membership.html", model);
         return "Membership buy successfully";
     }
 }

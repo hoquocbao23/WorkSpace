@@ -2,6 +2,7 @@ package fpt.swp.workspace.configuration;
 
 
 
+import fpt.swp.workspace.models.User;
 import fpt.swp.workspace.service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -49,11 +50,20 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         userName = jwtService.extractUsername(jwt);
 
         // check user authenticated yet
-        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
-            if (jwtService.isTokenValid(jwt,userDetails)){
+        if (userName != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null){
+            User userDetail = (User) userDetailsService.loadUserByUsername(userName);
+            // UserDetails userDetails = this.userDetailsService.loadUserByUsername(userName);
+            if (jwtService.isTokenValid(jwt,userDetail)){
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null, userDetails.getAuthorities());
+
+                UsernamePasswordAuthenticationToken authToken =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetail,
+                                null,
+                                userDetail.getAuthorities()
+                        );
+
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 securityContext.setAuthentication(authToken);
                 SecurityContextHolder.setContext(securityContext);

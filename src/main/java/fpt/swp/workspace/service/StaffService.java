@@ -74,13 +74,12 @@ public class StaffService {
     private CustomerRepository customerRepository;
 
 
-
     public AuthenticationResponse createStaff(StaffRequest request) {
         AuthenticationResponse response = new AuthenticationResponse();
         User newUser = new User();
         try {
             User findUser = repository.findByuserName(request.getUserName());
-            if (findUser != null){
+            if (findUser != null) {
                 throw new RuntimeException("user already exists");
             }
             newUser.setUserId(generateStaffId()); // Generate the User ID
@@ -100,17 +99,17 @@ public class StaffService {
 
             // Save the Staff entity
             staffRepository.save(newStaff);
-            if (savedUser.getUserId() != null ) {
+            if (savedUser.getUserId() != null) {
                 response.setStatus("Success");
                 response.setStatusCode(200);
                 response.setMessage("User and Staff Saved Successfully");
                 response.setData(savedUser);
             }
+        } catch (Exception e) {
+            response.setStatus("Error");
+            response.setStatusCode(400);
+            response.setMessage(e.getMessage());
         }
-       catch (Exception e ){
-           response.setStatus("Error");
-           response.setStatusCode(400);
-           response.setMessage(e.getMessage());       }
         return response;
     }
 
@@ -175,8 +174,7 @@ public class StaffService {
     }
 
 
-
-    public StaffResponse getWorkShift(String jwt){
+    public StaffResponse getWorkShift(String jwt) {
 
         String userName = jwtService.extractUsername(jwt);
         Staff staff = staffRepository.findStaffByUsername(userName);
@@ -190,7 +188,7 @@ public class StaffService {
 
     }
 
-    public StaffResponse getWorkShiftByStaffId(String staffId){
+    public StaffResponse getWorkShiftByStaffId(String staffId) {
         Staff staff = staffRepository.findById(staffId).orElseThrow(() -> new NullPointerException("Không tìm thấy staff"));
         StaffResponse response = new StaffResponse();
         response.setUserId(staff.getUserId());
@@ -222,28 +220,28 @@ public class StaffService {
         Staff existedStaff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy staff"));
 
-        if(request.getFullName() != null){
+        if (request.getFullName() != null) {
             existedStaff.setFullName(request.getFullName());
         }
-        if(request.getPhoneNumber() != null ){
+        if (request.getPhoneNumber() != null) {
             existedStaff.setPhoneNumber(request.getPhoneNumber());
         }
-        if(request.getEmail() != null){
+        if (request.getEmail() != null) {
             existedStaff.setEmail(request.getEmail());
         }
-        if(request.getWorkShift() != null){
+        if (request.getWorkShift() != null) {
             existedStaff.setWorkShift(WorkShift.valueOf(request.getWorkShift()));
         }
         if (request.getDateOfBirth() != null) {
             existedStaff.setDateOfBirth(request.getDateOfBirth());
         }
-        if(request.getWorkDays() != null){
+        if (request.getWorkDays() != null) {
             existedStaff.setWorkDays(request.getWorkDays());
         }
-        if(request.getBuildingId() != null){
+        if (request.getBuildingId() != null) {
             existedStaff.setBuildingId(request.getBuildingId());
         }
-        if(request.getStatus() != null){
+        if (request.getStatus() != null) {
             existedStaff.setStatus(request.getStatus());
         }
         return staffRepository.save(existedStaff);
@@ -316,7 +314,6 @@ public class StaffService {
 //    }
 
 
-
     public OrderStatusResponse updateOrderStatus(String bookingId, UpdateOrderBookingStatusRequest request) {
         OrderBooking order = orderBookingRepository.findByOrderId(bookingId)
                 .orElseThrow(() -> new RuntimeException("Order not found: " + bookingId));
@@ -326,8 +323,7 @@ public class StaffService {
     }
 
 
-
-    public List<RoomDTO> getRoomsAssigned(String token){
+    public List<RoomDTO> getRoomsAssigned(String token) {
         String userName = jwtService.extractUsername(token);
         Staff staff = staffRepository.findStaffByUsername(userName);
         if (staff == null) {
@@ -348,7 +344,7 @@ public class StaffService {
         return new ArrayList<>();
     }
 
-    public List<OrderBookingDetailDTO> getOrderBookingDetails(){
+    public List<OrderBookingDetailDTO> getOrderBookingDetails() {
         List<OrderBooking> orderBookingList = orderBookingRepository.findAll();
         if (orderBookingList.isEmpty()) {
             throw new NotFoundException("No order bookings found.");
@@ -368,7 +364,7 @@ public class StaffService {
 
             List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
             Map<String, Integer> serviceList = new HashMap<>();
-            for (OrderBookingDetail bookingDetail : bookingDetails){
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
                 String serviceName = bookingDetail.getService().getServiceName();
                 int quantity = bookingDetail.getBookingServiceQuantity();
                 serviceList.put(serviceName, quantity);
@@ -379,7 +375,7 @@ public class StaffService {
         return orderBookingDetailDTOList;
     }
 
-    public List<OrderBookingDetailDTO> getOrderBookingDetails(String token){
+    public List<OrderBookingDetailDTO> getOrderBookingDetails(String token) {
         String userName = jwtService.extractUsername(token);
         Staff staff = staffRepository.findStaffByUsername(userName);
         List<OrderBooking> orderBookingList = orderBookingRepository.findBookingsByDate(LocalDate.now().toString(), staff.getBuildingId());
@@ -401,7 +397,7 @@ public class StaffService {
 
             List<OrderBookingDetail> bookingDetails = orderBookingDetailRepository.findDetailByBookingId(orderBooking.getBookingId());
             Map<String, Integer> serviceList = new HashMap<>();
-            for (OrderBookingDetail bookingDetail : bookingDetails){
+            for (OrderBookingDetail bookingDetail : bookingDetails) {
                 String serviceName = bookingDetail.getService().getServiceName();
                 int quantity = bookingDetail.getBookingServiceQuantity();
                 serviceList.put(serviceName, quantity);
@@ -412,15 +408,39 @@ public class StaffService {
         return orderBookingDetailDTOList;
     }
 
-    @Scheduled(fixedRate = 10000)
+
+    @Scheduled(fixedRate = 60000)
     @Transactional
-    public void updateBookingStatusSocket(){
-        List<OrderBooking> orderBookingList = orderBookingRepository.findBookingsByDate(LocalDate.now().toString());
+    public void updateBookingStatusSocket() {
+        // Lấy toàn bộ booking
+        List<OrderBooking> orderBookingList = orderBookingRepository.findAll();
+        LocalDate today = LocalDate.now();
+
+        // duyệt qua từng booking
         for (OrderBooking orderBooking : orderBookingList) {
-            if (orderBooking.getBookingId().equals(BookingStatus.UPCOMING.toString())) {
+            // Cancel toàn bộ những booking đã qua ngày
+            if (today.isAfter(LocalDate.parse(orderBooking.getCheckinDate())) && orderBooking.getStatus().toString().equals(BookingStatus.UPCOMING.toString())) {
+                orderBooking.setStatus(BookingStatus.CANCELLED);
+                orderBookingRepository.save(orderBooking);
+                simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
+            } else  {
+
                 List<TimeSlot> timeSlots = orderBooking.getSlot();
                 for (TimeSlot timeSlot : timeSlots) {
+                    // nếu tới ngày check in, đã qua 15p, mà không check in thì huỷ
                     if (ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeStart().toString()), LocalTime.now()) > 15) {
+                        orderBooking.setStatus(BookingStatus.CANCELLED);
+                        orderBookingRepository.save(orderBooking);
+                        // Send the update to WebSocket clients
+                        simpMessagingTemplate.convertAndSend("/bookings/status", orderBooking);
+
+                        // tự động hoàn thành những đơn đang sử dụng, đã sử dụng xong.
+                        // today = checkin date
+                        // now - end time > 1p
+                        // status = USing
+                    }else if (today.equals(LocalDate.parse(orderBooking.getCheckinDate()))
+                                && ChronoUnit.MINUTES.between(LocalTime.parse(timeSlot.getTimeEnd().toString()), LocalTime.now()) > 1
+                                && orderBooking.getStatus().toString().equals(BookingStatus.USING.toString()) ){
                         orderBooking.setStatus(BookingStatus.FINISHED);
                         orderBookingRepository.save(orderBooking);
                         // Send the update to WebSocket clients
@@ -432,7 +452,6 @@ public class StaffService {
     }
 
 
-
     public List<OrderBookingDetailDTO> checkinByEmail(String date, String email) {
         Customer customer = customerRepository.findCustomerByEmail(email);
         if (customer == null) {
@@ -440,7 +459,7 @@ public class StaffService {
         }
         List<OrderBooking> orderBookingList = orderBookingRepository.getCustomerOrderByEmailAndDate(date, email);
         if (orderBookingList.isEmpty()) {
-            throw new NullPointerException( date + " khách hàng " + email + " chưa có booking nào.");
+            throw new NullPointerException(date + " khách hàng " + email + " chưa có booking nào.");
         }
         List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
 
@@ -475,7 +494,7 @@ public class StaffService {
         }
         List<OrderBooking> orderBookingList = orderBookingRepository.getCustomerOrderByPhoneAndDate(date, phonenumber);
         if (orderBookingList.isEmpty()) {
-            throw new NullPointerException( date + " khách hàng " + phonenumber + " chưa có booking nào.");
+            throw new NullPointerException(date + " khách hàng " + phonenumber + " chưa có booking nào.");
         }
         List<OrderBookingDetailDTO> orderBookingDetailDTOList = new ArrayList<>();
 
@@ -508,7 +527,7 @@ public class StaffService {
         if (order.getStatus() == BookingStatus.CANCELLED) {
             throw new RuntimeException("Booking " + bookingId + " đã bị huỷ.");
         }
-        if (order.getStatus() == status){
+        if (order.getStatus() == status) {
             throw new RuntimeException("Trạng thái đã được đặt");
         }
         order.setStatus(status);
@@ -520,18 +539,17 @@ public class StaffService {
         if (order.getStatus() == BookingStatus.CANCELLED) {
             throw new RuntimeException("Booking " + bookingId + " đã bị huỷ.");
         }
-            // convert String -> Enum
-            if ( order.getStatus() == BookingStatus.valueOf(status)) {
-                throw new RuntimeException("Trạng thái đã được đặt");
-            }
-            // convert String -> Enum
-            order.setStatus(BookingStatus.valueOf(status));
-            orderBookingRepository.save(order);
+        // convert String -> Enum
+        if (order.getStatus() == BookingStatus.valueOf(status)) {
+            throw new RuntimeException("Trạng thái đã được đặt");
+        }
+        // convert String -> Enum
+        order.setStatus(BookingStatus.valueOf(status));
+        orderBookingRepository.save(order);
     }
 
 
-
-    public void acceptPendingBooking(String bookingId){
+    public void acceptPendingBooking(String bookingId) {
         OrderBooking orderBooking = orderBookingRepository.findById(bookingId).orElseThrow(() -> new RuntimeException("Booking " + bookingId + " không có trong danh sách chờ! "));
         orderBooking.setStatus(BookingStatus.UPCOMING);
         orderBookingRepository.save(orderBooking);
@@ -557,7 +575,7 @@ public class StaffService {
             refundTransaction.setTransactionId(UUID.randomUUID().toString());
             refundTransaction.setAmount(payment.getAmount());
             refundTransaction.setStatus("completed");
-            refundTransaction.setType("refund");
+            refundTransaction.setType("Hoàn tiền cọc");
             refundTransaction.setTransaction_time(LocalDateTime.now());
             refundTransaction.setPayment(payment);
             transactionRepository.save(refundTransaction);
